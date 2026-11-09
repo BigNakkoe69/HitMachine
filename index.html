@@ -1,0 +1,1608 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e0a1f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Hitster">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Hitster Thuis</title>
+<style>
+:root{
+  --bg:#0e0a1f; --panel:#1a1433; --panel2:#241b45; --line:#3a2f66;
+  --text:#f5f2ff; --muted:#a59bc9; --accent:#ff3d9a; --accent2:#00e5ff;
+  --good:#3dff9a; --bad:#ff4d5e; --gold:#ffd23f;
+  --r:18px;
+  --head:'Unbounded', ui-rounded, system-ui, sans-serif;
+  --body:'Inter', -apple-system, system-ui, sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;min-height:100%}
+body{
+  background:
+    radial-gradient(900px 500px at 110% -10%, rgba(255,61,154,.22), transparent 60%),
+    radial-gradient(700px 500px at -20% 30%, rgba(0,229,255,.14), transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
+  overscroll-behavior-y:none;
+}
+#app{max-width:560px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 120px)}
+h1,h2,h3{font-family:var(--head);margin:0;letter-spacing:-.01em}
+h2{font-size:22px;margin-bottom:12px}
+h3{font-size:15px;margin-bottom:8px}
+p{line-height:1.5;margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+a{color:var(--accent2)}
+.logo{font-family:var(--head);font-weight:800;font-size:44px;line-height:.95;margin:18px 0 6px;
+  background:linear-gradient(90deg,var(--accent),#b26bff 50%,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo span{display:block;font-size:18px;letter-spacing:.3em;color:var(--text);-webkit-text-fill-color:var(--text);opacity:.85;margin-top:6px}
+.panel{background:rgba(26,20,51,.85);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin:14px 0;backdrop-filter:blur(6px)}
+.row{display:flex;gap:10px;align-items:center}
+.row.wrap{flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.stack>*+*{margin-top:10px}
+.btn{appearance:none;border:0;border-radius:14px;padding:14px 18px;font:600 16px var(--body);color:var(--text);
+  background:var(--panel2);border:1px solid var(--line);cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;text-decoration:none;transition:transform .08s}
+.btn:active{transform:scale(.97)}
+.btn.block{width:100%}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#b26bff);border:0;box-shadow:0 8px 24px rgba(255,61,154,.3)}
+.btn.cyan{background:linear-gradient(135deg,#00b8d4,#4d7cff);border:0}
+.btn.good{background:linear-gradient(135deg,#1fcf7a,#00b8d4);border:0;color:#04120b}
+.btn.ghost{background:transparent}
+.btn.sm{min-height:38px;padding:8px 12px;font-size:14px;border-radius:11px}
+.btn[disabled]{opacity:.4;pointer-events:none}
+input[type=text],input[type=number],input[type=search]{width:100%;font:16px var(--body);color:var(--text);background:#120d27;border:1px solid var(--line);border-radius:12px;padding:12px 14px;outline:none}
+input:focus{border-color:var(--accent2)}
+label.lbl{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+code.box{display:block;word-break:break-all;background:#120d27;border:1px dashed var(--line);border-radius:10px;padding:10px;font-size:13px;color:var(--accent2)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);font-size:13px}
+.ok{color:var(--good)} .err{color:var(--bad)}
+.coin{display:inline-block;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff6c2,var(--gold) 55%,#c99a00);box-shadow:0 0 6px rgba(255,210,63,.6);vertical-align:-2px}
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.topbar h2{margin:0;flex:1;font-size:18px}
+/* toggle */
+.switch{position:relative;width:52px;height:32px;flex:none}
+.switch input{opacity:0;width:0;height:0}
+.switch span{position:absolute;inset:0;background:var(--panel2);border:1px solid var(--line);border-radius:99px;transition:.2s}
+.switch span:before{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s}
+.switch input:checked+span{background:var(--accent)}
+.switch input:checked+span:before{transform:translateX(20px)}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper b{font-family:var(--head);font-size:22px;min-width:36px;text-align:center}
+/* standings */
+.scores{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin:0 -16px 10px;padding-left:16px;padding-right:16px;scrollbar-width:none}
+.scores::-webkit-scrollbar{display:none}
+.score{flex:none;padding:8px 12px;border-radius:14px;background:var(--panel);border:1px solid var(--line);font-size:13px;min-width:86px}
+.score.me{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.score b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.score .n{font-family:var(--head);font-size:18px}
+/* cards */
+.song{--c:#888;position:relative;display:flex;align-items:stretch;border-radius:16px;overflow:hidden;min-height:64px;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--c) 26%,var(--panel)),var(--panel) 70%);border:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.song .yr{flex:none;width:86px;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-weight:800;font-size:22px;color:#0e0a1f;background:var(--c)}
+.song .info{padding:10px 12px;min-width:0;display:flex;flex-direction:column;justify-content:center}
+.song .t{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song .a{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song.new{animation:pop .5s ease}
+.song.mys{--c:var(--accent);background:repeating-linear-gradient(135deg,#2a1d55 0 10px,#22184a 10px 20px);border:2px solid var(--accent);box-shadow:0 0 18px rgba(255,61,154,.45)}
+.song.mys .yr{background:linear-gradient(135deg,var(--accent),#b26bff);color:#fff;font-size:28px}
+.song.chal{border:2px dashed var(--gold);background:rgba(255,210,63,.08)}
+.song.chal .yr{background:var(--gold);font-size:14px;padding:4px;text-align:center;line-height:1.1}
+.song.wrong{opacity:.55}
+@keyframes pop{0%{transform:scale(.85);opacity:0}100%{transform:none;opacity:1}}
+.tl{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.slot{appearance:none;width:100%;border:2px dashed var(--line);background:transparent;color:var(--muted);border-radius:12px;min-height:38px;font:600 14px var(--body);cursor:pointer}
+.slot:active{background:rgba(255,255,255,.04)}
+.slot.taken{border-color:var(--gold);color:var(--gold)}
+.slot.hot{border-color:var(--accent2);color:var(--accent2)}
+.tl-end{font-size:12px;color:var(--muted);text-align:center;letter-spacing:.15em;text-transform:uppercase;margin:4px 0}
+/* mystery hero */
+.hero{border-radius:22px;padding:18px;text-align:center;background:linear-gradient(160deg,#2b1b5c,#170f34);border:1px solid var(--line);position:relative;overflow:hidden}
+.hero .q{font-family:var(--head);font-size:64px;font-weight:800;line-height:1;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.eq{display:flex;gap:4px;justify-content:center;height:28px;align-items:flex-end;margin:10px 0}
+.eq i{width:6px;border-radius:3px;background:var(--accent2);animation:eq 1s infinite ease-in-out}
+.eq i:nth-child(2){animation-delay:.2s;background:var(--accent)}
+.eq i:nth-child(3){animation-delay:.4s}
+.eq i:nth-child(4){animation-delay:.1s;background:#b26bff}
+.eq i:nth-child(5){animation-delay:.3s}
+.eq.off i{animation:none;height:6px}
+@keyframes eq{0%,100%{height:6px}50%{height:28px}}
+/* reveal */
+.flip{perspective:900px}
+.flip .face{animation:flipin .7s cubic-bezier(.2,.8,.2,1)}
+@keyframes flipin{0%{transform:rotateY(90deg)}100%{transform:none}}
+.big{--c:#888;border-radius:24px;padding:20px;text-align:center;background:linear-gradient(170deg,color-mix(in srgb,var(--c) 35%,var(--panel)),var(--panel));border:2px solid var(--c)}
+.big img{width:160px;height:160px;border-radius:14px;object-fit:cover;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.big .noimg{width:160px;height:160px;border-radius:14px;margin:0 auto;display:flex;align-items:center;justify-content:center;background:var(--c);color:#0e0a1f;font-family:var(--head);font-size:40px}
+.big .y{font-family:var(--head);font-weight:800;font-size:56px;line-height:1;margin:14px 0 6px;color:var(--c)}
+.big .t{font-weight:700;font-size:20px}
+.big .a{color:var(--muted)}
+.verdict{font-family:var(--head);font-size:26px;text-align:center;margin:14px 0 4px}
+/* bottom bar */
+.bottom{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(env(safe-area-inset-bottom) + 12px);background:linear-gradient(180deg,transparent,rgba(14,10,31,.95) 30%);z-index:5}
+.bottom .inner{max-width:560px;margin:0 auto;display:flex;gap:10px}
+/* library */
+.lib-row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.lib-row img,.lib-row .ph{width:44px;height:44px;border-radius:8px;object-fit:cover;flex:none;background:var(--panel2)}
+.lib-row.off{opacity:.45}
+.lib-row input[type=number]{width:84px;padding:8px;text-align:center;font-weight:700}
+.lib-row input.changed{border-color:var(--gold);color:var(--gold)}
+.chk{width:26px;height:26px;accent-color:var(--accent);flex:none}
+/* modal + toast */
+#modal{position:fixed;inset:0;z-index:20;display:none;background:rgba(5,3,14,.7);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center}
+#modal.open{display:flex}
+#modal .sheet{width:100%;max-width:560px;max-height:88vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:24px 24px 0 0;padding:20px 16px calc(env(safe-area-inset-bottom) + 20px);animation:up .25s ease}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 12px);transform:translateX(-50%) translateY(calc(-100% - 60px));visibility:hidden;z-index:30;background:var(--panel2);border:1px solid var(--line);padding:12px 16px;border-radius:14px;max-width:92vw;transition:transform .25s;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+#toast.show{transform:translateX(-50%) translateY(0);visibility:visible}
+#toast.err{border-color:var(--bad)}
+.handoff{min-height:70vh;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:16px}
+.handoff .who{font-family:var(--head);font-size:40px;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;word-break:break-word}
+.confetti{position:fixed;top:-20px;width:10px;height:14px;z-index:40;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.rules li{margin-bottom:8px;line-height:1.45}
+.pstat{margin-top:12px;font-size:13px;line-height:1.4;color:var(--muted);text-align:left;background:rgba(0,0,0,.25);border-radius:10px;padding:8px 10px}
+.pstat.err{color:#ffc2c8;border:1px solid rgba(255,77,94,.5)}
+.pstat.ok{color:var(--text)}
+.spin{display:inline-block;width:11px;height:11px;border:2px solid var(--accent2);border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-1px}
+@keyframes sp{to{transform:rotate(360deg)}}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+/* spelmodus-menu */
+.mode{display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;white-space:normal;padding:16px;justify-content:flex-start}
+.mode .ic{font-size:30px;line-height:1;flex:none}
+.mode b{display:block;font-size:17px;margin-bottom:3px}
+.mode .d{display:block;font-weight:400;font-size:14px;color:var(--muted);line-height:1.4}
+.mode.primary .d{color:rgba(255,255,255,.85)}
+/* multiplayer host (laptop) */
+body.wide #app{max-width:1200px}
+.hgrid{display:grid;gap:16px;grid-template-columns:1fr;align-items:start}
+@media(min-width:900px){.hgrid{grid-template-columns:minmax(340px,420px) 1fr}}
+.roomcode{font-family:var(--head);font-weight:800;font-size:clamp(56px,8vw,92px);letter-spacing:.12em;text-align:center;line-height:1.1;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+#qr{display:flex;justify-content:center;margin:10px 0;min-height:10px}
+#qr img{background:#fff;padding:10px;border-radius:14px;width:210px;height:210px}
+.plist .pl{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.plist .pl:last-child{border-bottom:0}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--bad);flex:none}
+.dot.on{background:var(--good);box-shadow:0 0 8px var(--good)}
+.tlgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.tlbox{background:rgba(26,20,51,.85);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.tlbox.act{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset,0 0 24px rgba(255,61,154,.25)}
+.tlbox h3{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.compact .tl{gap:4px}
+.compact .song{min-height:44px;border-radius:12px}
+.compact .song .yr{width:60px;font-size:15px}
+.compact .song .info{padding:6px 10px}
+.compact .song .t{font-size:14px}
+.compact .song .a{font-size:12px}
+.compact .tl-end{display:none}
+.stage{text-align:center}
+.bigwho{font-family:var(--head);font-weight:800;font-size:clamp(32px,4.5vw,54px);line-height:1.1;word-break:break-word;margin:6px 0 10px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hitbtn{font-family:var(--head);font-size:26px;min-height:76px;background:linear-gradient(135deg,var(--gold),#ff9f43);color:#1a1000;border:0;box-shadow:0 8px 24px rgba(255,210,63,.35)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div>
+
+<script>
+'use strict';
+/* =========================================================
+   CONFIG — vul hier je Spotify Client ID in (of doe het in de app)
+   ========================================================= */
+const CONFIG = {
+  CLIENT_ID: '',                       // bijv. 'a1b2c3d4e5...'
+  REDIRECT_URI: location.origin + location.pathname, // moet exact zo in het Spotify Dashboard staan
+  SCOPES: 'streaming user-read-email user-read-private playlist-read-private playlist-read-collaborative user-read-playback-state user-modify-playback-state',
+};
+const API = 'https://api.spotify.com/v1';
+
+/* ---------- opslag ---------- */
+const APP_VERSION = '8';
+const K = {room:'hs_room', mpgame:'hs_mpgame', guest:'hs_guest', gname:'hs_gname', mode:'hs_audio_mode', auth:'hs_auth', cid:'hs_client_id', pkce:'hs_pkce', lib:'hs_library', ov:'hs_overrides', game:'hs_game', set:'hs_settings', dev:'hs_device_manual', names:'hs_names'};
+const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+const del = k => { try { localStorage.removeItem(k); } catch {} };
+
+let lib = load(K.lib, null);           // {source:'spotify'|'demo', playlistId, name, tracks:[]}
+let ov = load(K.ov, {});               // {trackId:{year, excluded}}
+let game = load(K.game, null);
+let settings = Object.assign({target:10, tokens:true, startTokens:2}, load(K.set, {}));
+let me = null;                          // spotify profiel
+let ui = {screen:'home', libQuery:'', libFilter:'all', pendingChallenger:null};
+
+const clientId = () => CONFIG.CLIENT_ID || load(K.cid, '');
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const rand = (a, b) => Math.floor(a + Math.random() * (b - a));
+function toast(msg, isErr) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'show' + (isErr ? ' err' : '');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.className = isErr ? 'err' : '', isErr ? 5000 : 2600);
+}
+function decColor(y) {
+  const d = Math.floor((y || 0) / 10) * 10;
+  return ({1950:'#ff9f43',1960:'#ffd23f',1970:'#a3ff3d',1980:'#ff3d9a',1990:'#00e5ff',2000:'#b26bff',2010:'#5b8cff',2020:'#ff6b6b'})[d] || (d < 1950 ? '#ff9f43' : '#ff6b6b');
+}
+const coins = n => `<span class="pill"><span class="coin"></span> ${n}</span>`;
+
+/* ---------- bibliotheek ---------- */
+function trackMap() { if (!trackMap._c || trackMap._lib !== lib) { trackMap._c = new Map((lib?.tracks || []).map(t => [t.id, t])); trackMap._lib = lib; } return trackMap._c; }
+const T = id => trackMap().get(id);
+function yearOf(t) { if (typeof t === 'string') t = T(t); if (!t) return 0; const o = ov[t.id]; return (o && o.year) || t.year || 0; }
+const isExcluded = t => !!(ov[t.id] && ov[t.id].excluded);
+const playable = () => (lib?.tracks || []).filter(t => !isExcluded(t) && yearOf(t));
+
+function setOverride(id, patch) {
+  const t = T(id); const o = Object.assign({}, ov[id], patch);
+  if (o.year && t && +o.year === +t.year) delete o.year;
+  if (!o.excluded) delete o.excluded;
+  if (Object.keys(o).length) ov[id] = o; else delete ov[id];
+  save(K.ov, ov);
+}
+
+/* =========================================================
+   SPOTIFY AUTH (PKCE, geen backend)
+   ========================================================= */
+function randStr(n) {
+  const cs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const v = crypto.getRandomValues(new Uint8Array(n)); return Array.from(v, x => cs[x % cs.length]).join('');
+}
+async function challengeOf(v) {
+  const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
+  return btoa(String.fromCharCode(...new Uint8Array(h))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+async function login() {
+  if (!clientId()) return toast('Vul eerst je Spotify Client ID in.', true);
+  const verifier = randStr(64);
+  save(K.pkce, verifier);
+  // Het verifier gaat óók mee in 'state': op iOS komt de terugsprong soms in een andere
+  // browsercontext terecht (beginscherm-app vs. Safari) waar localStorage leeg is.
+  const state = randStr(12) + '_' + verifier;
+  const p = new URLSearchParams({
+    response_type: 'code', client_id: clientId(), scope: CONFIG.SCOPES,
+    redirect_uri: CONFIG.REDIRECT_URI, code_challenge_method: 'S256',
+    code_challenge: await challengeOf(verifier), state,
+  });
+  location.href = 'https://accounts.spotify.com/authorize?' + p;
+}
+async function handleCallback() {
+  const q = new URLSearchParams(location.search);
+  if (!q.has('code') && !q.has('error')) return;
+  history.replaceState(null, '', location.pathname);
+  if (q.get('error')) return toast('Inloggen geannuleerd: ' + q.get('error'), true);
+  const verifier = load(K.pkce, null) || (q.get('state') || '').split('_')[1];
+  if (!verifier) return toast('Inloggen mislukt (geen verifier). Probeer opnieuw.', true);
+  try {
+    const r = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: new URLSearchParams({grant_type: 'authorization_code', code: q.get('code'), redirect_uri: CONFIG.REDIRECT_URI, client_id: clientId(), code_verifier: verifier}),
+    });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error_description || j.error || r.status);
+    storeToken(j); del(K.pkce); toast('Ingelogd bij Spotify ✓');
+  } catch (e) { toast('Inloggen mislukt: ' + e.message, true); }
+}
+function storeToken(j) {
+  const old = load(K.auth, {});
+  save(K.auth, {access: j.access_token, refresh: j.refresh_token || old.refresh, exp: Date.now() + (j.expires_in || 3600) * 1000, scope: j.scope || old.scope || ''});
+}
+async function refreshToken() {
+  const a = load(K.auth, null); if (!a?.refresh) throw new Error('Niet ingelogd');
+  const r = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST', headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: new URLSearchParams({grant_type: 'refresh_token', refresh_token: a.refresh, client_id: clientId()}),
+  });
+  const j = await r.json();
+  if (!r.ok) { del(K.auth); throw new Error('Sessie verlopen, log opnieuw in.'); }
+  storeToken(j);
+}
+async function token() {
+  const a = load(K.auth, null); if (!a) throw new Error('Niet ingelogd bij Spotify');
+  if (Date.now() > a.exp - 60000) await refreshToken();
+  return load(K.auth).access;
+}
+const loggedIn = () => !!load(K.auth, null);
+const apiLog = [];
+function logApi(x) { apiLog.unshift({t: new Date().toLocaleTimeString('nl-NL'), ...x}); if (apiLog.length > 30) apiLog.length = 30; }
+async function api(path, opts = {}, retry = true) {
+  const m = opts.method || 'GET';
+  let r;
+  try {
+    r = await fetch(API + path, {
+      method: m,
+      headers: {Authorization: 'Bearer ' + await token(), ...(opts.body ? {'Content-Type': 'application/json'} : {})},
+      body: opts.body ? JSON.stringify(opts.body) : undefined,
+    });
+  } catch (err) {
+    logApi({m, p: path, s: 'netwerk', e: err.message});
+    throw new Error('Geen verbinding met Spotify (' + err.message + ')');
+  }
+  if (r.status === 401 && retry) { logApi({m, p: path, s: 401, e: 'token vernieuwen'}); await refreshToken(); return api(path, opts, false); }
+  const txt = await r.text(); let j = null; try { j = txt ? JSON.parse(txt) : null; } catch {}
+  logApi({m, p: path, s: r.status, e: r.ok ? '' : (j?.error?.message || txt.slice(0, 120)) + (j?.error?.reason ? ' [' + j.error.reason + ']' : '')});
+  if (!r.ok) { const e = new Error(j?.error?.message || ('HTTP ' + r.status)); e.status = r.status; e.reason = j?.error?.reason; throw e; }
+  return j;
+}
+function logout() { del(K.auth); me = null; render(); }
+
+/* ---------- playlist ---------- */
+function parsePlaylistId(s) {
+  s = (s || '').trim();
+  const m = s.match(/playlist[/:]([A-Za-z0-9]{22})/) || s.match(/^([A-Za-z0-9]{22})$/);
+  return m ? m[1] : null;
+}
+async function loadPlaylist() {
+  const id = parsePlaylistId($('#pl')?.value);
+  if (!id) return toast('Plak een geldige Spotify-playlistlink.', true);
+  const btn = $('#plbtn'); if (btn) { btn.disabled = true; btn.textContent = 'Laden…'; }
+  try {
+    const meta = await api(`/playlists/${id}?fields=name`).catch(() => ({name: 'Playlist'}));
+    const tracks = []; let offset = 0, total = 1;
+    while (offset < total) {
+      const page = await api(`/playlists/${id}/items?limit=50&offset=${offset}`);
+      total = page.total ?? 0;
+      for (const it of page.items || []) {
+        const t = it.item || it.track;            // 'item' = nieuwe veldnaam (feb 2026)
+        if (!t || t.type !== 'track' || it.is_local || !t.id) continue;
+        if (tracks.some(x => x.id === t.id)) continue;
+        const imgs = t.album?.images || [];
+        tracks.push({
+          id: t.id, uri: t.uri, title: t.name,
+          artist: (t.artists || []).map(a => a.name).join(', '),
+          year: parseInt((t.album?.release_date || '').slice(0, 4)) || 0,
+          img: (imgs[imgs.length - 1] || {}).url || '', imgL: (imgs[1] || imgs[0] || {}).url || '',
+          dur: t.duration_ms || 180000,
+        });
+      }
+      offset += 50; if (!page.next) break;
+    }
+    if (!tracks.length) throw new Error('Geen nummers gevonden in deze playlist.');
+    lib = {source: 'spotify', playlistId: id, name: meta.name || 'Playlist', tracks};
+    save(K.lib, lib); dropStaleGame(); toast(`${tracks.length} nummers geladen ✓`); if (audioMode() === 'app') initSdk(); render();
+  } catch (e) {
+    if (e.status === 403 || e.status === 404) toast('Kan deze playlist niet lezen. Spotify staat alleen playlists toe die jij zelf bezit of waaraan je meewerkt.', true);
+    else toast('Laden mislukt: ' + e.message, true);
+    if (btn) { btn.disabled = false; btn.textContent = 'Laden'; }
+  }
+}
+
+/* ---------- afspelen via Spotify Connect ---------- */
+let playing = false;
+let pstat = {s: 'idle', msg: ''};
+let curDev = null;   // apparaat waarop het laatst succesvol is afgespeeld
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const isPhone = d => d && d.type === 'Smartphone';
+function setStatus(s, msg) {
+  pstat = {s, msg};
+  if (ui.screen === 'host') mpBroadcast();
+  const el = $('#pstat'); if (el) el.outerHTML = statusHtml();
+}
+function statusHtml() {
+  if (pstat.s === 'idle' || lib?.source === 'demo') return '<div id="pstat"></div>';
+  const ic = pstat.s === 'ok' ? '<span class="ok">●</span>' : pstat.s === 'err' ? '<span class="err">●</span>' : '<span class="spin"></span>';
+  return `<div id="pstat" class="pstat ${pstat.s}">${ic} <span>${esc(pstat.msg)}</span>${pstat.s === 'err' ? `
+    <div class="row" style="margin-top:8px"><a class="btn sm grow" href="spotify:">1 · Open Spotify</a><button class="btn sm grow" data-a="replay">2 · ▶ Opnieuw</button></div>
+    <div style="margin-top:6px"><a href="#" data-a="diag">Diagnose</a></div>` : ''}</div>`;
+}
+/* ---------- Spotify Web Playback SDK: muziek rechtstreeks in deze app ---------- */
+const sdk = {player: null, id: null, state: 'uit', err: ''};
+const hasStreamingScope = () => (load(K.auth, {})?.scope || '').includes('streaming');
+const audioMode = () => load(K.mode, 'app');       // 'app' = in deze app (SDK) · 'spotify' = Spotify-app/ander apparaat
+function sdkLog(e) { logApi({m: 'SDK', p: 'speler', s: sdk.id ? 200 : 0, e}); }
+function initSdk() {
+  if (sdk.player || sdk.state === 'laden' || !loggedIn() || lib?.source !== 'spotify') return;
+  if (!hasStreamingScope()) { sdk.state = 'fout'; sdk.err = 'Opnieuw inloggen nodig (nieuw recht "streaming").'; return; }
+  sdk.state = 'laden'; sdkLog('laden');
+  window.onSpotifyWebPlaybackSDKReady = () => {
+    const pl = new Spotify.Player({name: 'Hitster Thuis', getOAuthToken: cb => token().then(cb).catch(() => {}), volume: 1});
+    pl.addListener('ready', ({device_id}) => { sdk.id = device_id; sdk.state = 'klaar'; sdk.err = ''; sdkLog('klaar, apparaat ' + device_id.slice(0, 8)); refreshSdkUi(); });
+    pl.addListener('not_ready', () => { sdk.id = null; sdk.state = 'offline'; sdkLog('offline'); refreshSdkUi(); });
+    for (const ev of ['initialization_error', 'authentication_error', 'account_error', 'playback_error'])
+      pl.addListener(ev, ({message}) => { sdk.err = ev + ': ' + message; if (ev !== 'playback_error') sdk.state = 'fout'; sdkLog(sdk.err); refreshSdkUi(); });
+    pl.addListener('autoplay_failed', () => { sdkLog('autoplay geblokkeerd, tik ▶'); setStatus('err', 'De browser blokkeert het geluid. Klik op deze pagina op ▶ Afspelen.'); });
+    pl.connect().then(ok => { if (!ok) { sdk.state = 'fout'; sdk.err = 'verbinden mislukt'; sdkLog(sdk.err); refreshSdkUi(); } });
+    sdk.player = pl;
+  };
+  const sc = document.createElement('script'); sc.src = 'https://sdk.scdn.co/spotify-player.js';
+  sc.onerror = () => { sdk.state = 'fout'; sdk.err = 'SDK kon niet laden'; sdkLog(sdk.err); refreshSdkUi(); };
+  document.head.appendChild(sc);
+}
+// iOS start geluid alleen na een tik: roep dit aan binnen elke klik.
+function unlockAudio() { try { sdk.player?.activateElement?.(); } catch {} }
+function refreshSdkUi() { const el = $('#sdkstat'); if (el) el.outerHTML = sdkStatHtml(); }
+function sdkStatHtml() {
+  const m = sdk.state === 'klaar' ? '<span class="ok">✓ Klaar: muziek speelt in deze app</span>'
+    : sdk.state === 'laden' ? '<span class="spin"></span> Speler in deze app starten…'
+    : sdk.state === 'fout' ? `<span class="err">✗ ${esc(sdk.err)}</span>${!hasStreamingScope() ? ' <a href="#" data-a="relogin">Opnieuw inloggen</a>' : ''}`
+    : sdk.state === 'offline' ? '<span class="err">✗ Speler offline</span>' : '';
+  return `<div id="sdkstat" class="small">${m}</div>`;
+}
+const sdkDevice = () => sdk.id ? {id: sdk.id, name: 'deze app', type: 'Browser', sdk: true} : null;
+
+// Kiest een apparaat. Voorrang: handmatig gekozen apparaat (via 🔊), dan het apparaat dat nu
+// actief is, dan een smartphone, dan het eerste. Automatische keuzes worden niet onthouden.
+async function ensureDevice(skipId) {
+  const list = ((await api('/me/player/devices'))?.devices || []).filter(x => !x.is_restricted && x.id !== skipId && x.id !== sdk.id);
+  const saved = load(K.dev, null);
+  const d = list.find(x => saved && x.id === saved.id) || list.find(x => x.is_active) || list.find(x => x.type === 'Smartphone') || list[0];
+  if (!d) return null;
+  if (!d.is_active) {   // eerst overzetten, anders negeert Spotify de play-opdracht vaak
+    await api('/me/player', {method: 'PUT', body: {device_ids: [d.id], play: false}}).catch(() => {});
+    await sleep(900);
+  }
+  return d;
+}
+const norm = x => String(x || '').toLowerCase().replace(/\s*[-(\[].*$/, '').trim();
+// Speelt het gevraagde nummer op dit apparaat? Soepel: Spotify kan een nummer in jouw land onder een
+// ander ID afspelen ("relinking") of soms geen nummerinfo teruggeven.
+async function isPlaying(t, d, sentAt, pos, strict) {
+  let s;
+  try { s = await api('/me/player'); } catch (e) { logApi({m: 'CHECK', p: 'speelt het?', s: 0, e: e.message}); return {ok: false}; }
+  const it = s?.item;
+  const sameDev = !d || !s?.device?.id || s.device.id === d.id;
+  const nameMatch = !!it && (it.uri === t.uri || norm(it.name) === norm(t.title));
+  const sameSong = strict ? (nameMatch || !it)
+    : (!it || nameMatch || (pos != null && Math.abs((s.progress_ms || 0) - (pos + (Date.now() - sentAt))) < 8000));
+  const ok = !!(s && s.is_playing && sameDev && sameSong);
+  logApi({m: 'CHECK', p: 'speelt het?', s: ok ? 200 : 0, e: s ? `speelt=${s.is_playing} op=${s.device?.name || '?'} nummer=${it ? it.name + ' (' + it.uri + ')' : 'geen info'} pos=${Math.round((s.progress_ms || 0) / 1000)}s` : 'geen speler'});
+  return {ok, s, sameSong};
+}
+// Route A (computer/speaker): "speel dit nummer af".
+async function tryPlayOn(d, t, pos) {
+  const q = '/me/player/play?device_id=' + encodeURIComponent(d.id);
+  const sentAt = Date.now();
+  await api(q, {method: 'PUT', body: {uris: [t.uri], position_ms: pos}});
+  for (let i = 0; i < 4; i++) {
+    await sleep(1000);
+    if ((await isPlaying(t, d, sentAt, pos)).ok) return true;
+  }
+  return false;
+}
+// Route B (iPhone): de Spotify-app op iOS kan op de achtergrond geen nieuw nummer laden via "play",
+// maar wel "volgende" en "doorspoelen" (net als het vergrendelscherm). Dus: in de wachtrij → volgende → spoelen.
+async function tryQueueOn(d, t, pos) {
+  const dq = 'device_id=' + encodeURIComponent(d.id);
+  await api('/me/player/repeat?state=off&' + dq, {method: 'PUT'}).catch(() => {});
+  await api('/me/player/queue?uri=' + encodeURIComponent(t.uri) + '&' + dq, {method: 'POST'});
+  await sleep(500);
+  await api('/me/player/next?' + dq, {method: 'POST'});
+  for (let i = 0; i < 6; i++) {
+    await sleep(900);
+    const r = await isPlaying(t, d, 0, null, true);
+    if (r.ok) {
+      await api('/me/player/seek?position_ms=' + pos + '&' + dq, {method: 'PUT'}).catch(() => {});
+      return true;
+    }
+    // Staat ons nummer klaar maar op pauze? Dan "hervatten" (werkt ook op de achtergrond).
+    if (r.s && !r.s.is_playing && (i === 1 || i === 3)) await api('/me/player/play?' + dq, {method: 'PUT'}).catch(() => {});
+  }
+  return false;
+}
+const randPos = t => 0;   // elk nummer start vanaf het begin
+async function seekRandom() {
+  const t = T(game?.current); if (!t || !curDev) return play(true);
+  try {
+    await api('/me/player/seek?position_ms=' + randPos(t) + '&device_id=' + encodeURIComponent(curDev.id), {method: 'PUT'});
+    setStatus('ok', 'Weer vanaf het begin');
+  } catch (e) { play(true); }
+}
+async function playTrack(t, restart = true) {
+  if (play._busy) return; play._busy = true;
+  setStatus('busy', 'Verbinden met Spotify…');
+  try {
+    let d = null;
+    if (audioMode() === 'app') {
+      if (sdk.state !== 'klaar') { initSdk(); for (let i = 0; i < 16 && sdk.state === 'laden'; i++) await sleep(500); }
+      d = sdkDevice();
+      if (!d) { playing = false; setStatus('err', 'De speler in deze app is niet klaar' + (sdk.err ? ' (' + sdk.err + ')' : '') + '. Kies bij Nieuw spel "Via Spotify-app".'); return; }
+    } else d = await ensureDevice();
+    if (!d) { playing = false; setStatus('err', 'Spotify ziet geen apparaat. Open de Spotify-app, zet een willekeurig nummer aan en kom terug (laat het spelen).'); return; }
+    let ok = false;
+    if (!restart) {   // hervatten
+      await api('/me/player/play?device_id=' + encodeURIComponent(d.id), {method: 'PUT'});
+      await sleep(800); ok = (await isPlaying(t, d, 0, null, true)).ok;
+    } else {
+      const pos = randPos(t);
+      setStatus('busy', 'Afspelen op ' + d.name + '…');
+      if (d.sdk) ok = await tryPlayOn(d, t, pos);
+      else if (isPhone(d)) ok = await tryQueueOn(d, t, pos);           // iPhone: alleen route B (A stopt de muziek)
+      else ok = await tryPlayOn(d, t, pos) || await tryQueueOn(d, t, pos);
+    }
+    playing = ok;
+    if (ok) {
+      curDev = d;
+      // Herhaal dit nummer eindeloos: zo valt Spotify nooit stil en blijft de iPhone-app wakker.
+      api('/me/player/repeat?state=track&device_id=' + encodeURIComponent(d.id), {method: 'PUT'}).catch(() => {});
+      setStatus('ok', d.sdk ? 'Speelt in deze app' : 'Speelt op ' + d.name);
+    } else {
+      setStatus('err', d.sdk ? 'Spotify speelt niet af in deze app' + (sdk.err ? ' (' + sdk.err + ')' : '') + '. Tik ▶ Opnieuw.' : isPhone(d)
+        ? `Het nummer start niet op "${d.name}". Open Spotify, zet een willekeurig nummer aan, kom terug en tik ▶ Opnieuw.`
+        : `Spotify kreeg de opdracht, maar "${d.name}" speelt niet.`);
+    }
+  } catch (e) {
+    playing = false;
+    if (e.status === 404 || e.reason === 'NO_ACTIVE_DEVICE') setStatus('err', 'Geen actief apparaat. Open Spotify, zet een willekeurig nummer aan, kom terug en tik ▶ Opnieuw.');
+    else if (e.status === 403 && e.reason === 'PREMIUM_REQUIRED') setStatus('err', 'Spotify Premium is nodig om af te spelen.');
+    else if (e.status === 403) setStatus('err', 'Spotify weigert afspelen: ' + e.message);
+    else setStatus('err', e.message);
+  } finally { play._busy = false; updateEq(); }
+}
+async function play(restart = true) {
+  if (!game?.current) return;
+  if (lib.source === 'demo') { if (!play._demo) { play._demo = 1; toast('Demomodus: er speelt geen muziek. Kies gewoon een plek om de flow te testen.'); } return; }
+  const t = T(game.current);
+  if (!t) return setStatus('err', 'Dit kaartje hoort bij een andere playlist. Start een nieuw spel.');
+  return playTrack(t, restart);
+}
+async function pause() {
+  if (lib?.source !== 'spotify' || !loggedIn()) return;
+  try { await api('/me/player/pause', {method: 'PUT'}); } catch {}
+  playing = false; setStatus('idle', ''); updateEq();
+}
+// Op een iPhone tonen we geen pauzeknop: een gepauzeerde Spotify-app wordt door iOS in slaap gezet.
+function updateEq() {
+  const e = $('.eq'); if (e) e.classList.toggle('off', !playing);
+  const b = $('[data-a=toggle]'); if (!b) return;
+  b.innerHTML = playing ? '⏸ Pauze' : '▶ Afspelen';
+  b.style.display = playing && isPhone(curDev) ? 'none' : '';
+}
+// Controle vóór het spel: speelt Spotify al op een apparaat?
+async function checkPlayer() {
+  const el = $('#devcheck'); if (!el) return;
+  el.innerHTML = '<span class="spin"></span> Controleren…';
+  try {
+    const s = await api('/me/player');
+    if (s && s.is_playing && s.device) el.innerHTML = `<span class="ok">✓ Spotify speelt op <b>${esc(s.device.name)}</b>. Klaar om te starten!</span>`;
+    else if (s && s.device) el.innerHTML = `<span class="err">✗ Spotify staat op pauze op ${esc(s.device.name)}.</span> Zet een nummer aan in de Spotify-app en controleer opnieuw.`;
+    else el.innerHTML = '<span class="err">✗ Spotify speelt nergens.</span> Open de Spotify-app, zet een willekeurig nummer aan en kom terug.';
+  } catch (e) { el.innerHTML = `<span class="err">✗ ${esc(e.message)}</span>`; }
+}
+
+/* ---------- diagnose ---------- */
+async function runDiag() {
+  const a = load(K.auth, null);
+  const need = ['streaming', 'user-read-playback-state', 'user-modify-playback-state', 'playlist-read-private'];
+  const missing = a?.scope ? need.filter(s => !a.scope.includes(s)) : [];
+  modal(`<h2>Spotify-diagnose</h2><div id="dg" class="stack small"><p class="muted">Bezig…</p></div>
+    <div class="row wrap" style="margin-top:12px"><button class="btn grow" data-a="testplay">▶ Test-afspelen</button><button class="btn grow" data-a="diag">Opnieuw</button></div>
+    <button class="btn ghost block" data-a="copydiag" style="margin-top:10px">Kopieer rapport</button>`);
+  const lines = [];
+  const add = (ok, txt) => { lines.push((ok === null ? '• ' : ok ? '✓ ' : '✗ ') + txt); $('#dg').innerHTML = lines.map(l => `<div class="${l[0] === '✗' ? 'err' : l[0] === '✓' ? 'ok' : ''}">${esc(l)}</div>`).join(''); };
+  add(null, 'App-versie ' + APP_VERSION + ' · modus: ' + (audioMode() === 'app' ? 'in deze app' : 'via Spotify-app'));
+  add(sdk.state === 'klaar', 'Speler in deze app: ' + sdk.state + (sdk.err ? ' · ' + sdk.err : ''));
+  add(!!clientId(), 'Client ID ingesteld');
+  add(!!a, 'Ingelogd');
+  add(null, 'Gekozen apparaat: ' + (load(K.dev, null)?.name || 'automatisch (waar Spotify nu speelt)'));
+  if (!a) return;
+  if (a.scope) add(!missing.length, missing.length ? 'Ontbrekende rechten: ' + missing.join(', ') + ' → log uit en opnieuw in' : 'Rechten (scopes) in orde');
+  try { const u = await api('/me'); add(true, 'Account: ' + (u.display_name || u.id)); } catch (e) { add(false, 'Account ophalen: ' + e.message); }
+  try {
+    const l = (await api('/me/player/devices'))?.devices || [];
+    add(l.length > 0, l.length ? 'Apparaten: ' + l.map(d => d.name + ' (' + d.type + (d.is_active ? ', actief' : '') + (d.is_restricted ? ', BEPERKT' : '') + ')').join('; ') : 'Geen apparaten zichtbaar. Open de Spotify-app en speel iets af.');
+  } catch (e) { add(false, 'Apparaten: ' + e.message); }
+  try { const s = await api('/me/player'); add(null, s ? `Speler: ${s.is_playing ? 'speelt' : 'gepauzeerd'} op ${s.device?.name || '?'} · ${s.item ? s.item.name + ' (' + s.item.uri + ')' : 'geen nummerinfo'} · type=${s.currently_playing_type || '?'} · ${Math.round((s.progress_ms || 0) / 1000)}s` : 'Speler: niets actief'); } catch (e) { add(false, 'Speler: ' + e.message); }
+  add(null, 'Laatste Spotify-verzoeken:');
+  apiLog.slice(0, 30).forEach(x => add(x.s >= 200 && x.s < 300 ? true : false, `${x.t} ${x.m} ${x.p.split('?')[0]} → ${x.s}${x.e ? ' ' + x.e : ''}`));
+  runDiag.text = lines.join('\n');
+}
+async function testPlay() {
+  const t = playable()[0];
+  if (!t || lib.source !== 'spotify') return toast('Laad eerst je Spotify-playlist.', true);
+  closeModal(); toast('Test: ' + t.title);
+  await playTrack(t, true);
+  toast(pstat.s === 'ok' ? 'Het werkt! ' + pstat.msg : pstat.msg, pstat.s !== 'ok');
+  if (pstat.s !== 'ok') runDiag();
+}
+async function openDevices() {
+  const cur = load(K.dev, null);
+  modal(`<h2>Afspelen op…</h2><p class="muted small">Muziek speelt via Spotify Connect op je telefoon, laptop of speaker. Zie je je iPhone niet? Open de Spotify-app, zet een nummer aan, kom terug en tik Vernieuwen.</p><div id="devs" class="stack"><p class="muted">Zoeken…</p></div>
+    <div class="row" style="margin-top:14px"><a class="btn grow" href="spotify:">Open Spotify</a><button class="btn grow" data-a="devices">Vernieuwen</button></div>
+    <button class="btn ghost block" data-a="diag" style="margin-top:10px">Diagnose</button>`);
+  try {
+    const r = await api('/me/player/devices');
+    const list = r?.devices || [];
+    $('#devs').innerHTML = list.length ? list.map(d => `<button class="btn block" data-a="pickdev" data-id="${esc(d.id)}" data-name="${esc(d.name)}" style="justify-content:space-between">
+      <span>${d.type === 'Smartphone' ? '📱' : d.type === 'Speaker' ? '🔊' : '💻'} ${esc(d.name)}</span>${cur?.id === d.id ? '<span class="ok">✓</span>' : d.is_active ? '<span class="muted small">actief</span>' : ''}</button>`).join('')
+      : '<p class="err">Geen apparaten gevonden.</p>';
+  } catch (e) { $('#devs').innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+}
+
+/* =========================================================
+   SPELLOGICA
+   ========================================================= */
+function saveGame() {
+  if (game?.mp) { save(K.mpgame, game); mpBroadcast(); } else save(K.game, game);
+}
+function newGame(names, opts = {}) {
+  const deck = shuffle(playable().map(t => t.id));
+  if (deck.length < names.length + 5) return toast('Te weinig speelbare nummers voor dit aantal spelers.', true);
+  const players = names.map((n, i) => ({name: n, pid: opts.pids?.[i], timeline: [deck.pop()], tokens: settings.tokens ? settings.startTokens : 0}));
+  game = {players, deck, discard: [], turn: 0, phase: 'handoff', current: null, slot: null, challenges: [], result: null,
+          target: settings.target, tokens: settings.tokens, winner: null, guessed: false, round: 1};
+  if (opts.mp) game.mp = true;
+  saveGame(); ui.screen = opts.mp ? 'host' : 'game'; render();
+}
+function draw() {
+  if (!game.deck.length && game.discard.length) { game.deck = shuffle(game.discard); game.discard = []; }
+  return game.deck.pop() || null;
+}
+const curP = () => game.players[game.turn];
+function startTurn() {
+  game.current = draw();
+  if (!game.current) return endByCount();
+  Object.assign(game, {phase: 'listen', slot: null, challenges: [], result: null, guessed: false});
+  ui.pendingChallenger = null; saveGame(); render(); play(true);
+}
+function slotOk(tl, slot, y) {
+  return (slot === 0 || yearOf(tl[slot - 1]) <= y) && (slot === tl.length || y <= yearOf(tl[slot]));
+}
+function insertSorted(tl, id) {
+  const y = yearOf(id); let i = tl.findIndex(x => yearOf(x) > y); if (i < 0) i = tl.length; tl.splice(i, 0, id); return i;
+}
+function lockIn() {
+  if (game.slot === null) return;
+  const others = game.players.some((p, i) => i !== game.turn && p.tokens > 0);
+  if (game.tokens && others && game.players[game.turn].timeline.length + 1 > 1) { game.phase = 'challenge'; saveGame(); render(); }
+  else reveal();
+}
+function reveal() {
+  const p = curP(), y = yearOf(game.current), tl = p.timeline;
+  const res = {correct: slotOk(tl, game.slot, y), to: null, chal: []};
+  game.challenges.forEach(c => { game.players[c.p].tokens--; res.chal.push({p: c.p, slot: c.slot, ok: slotOk(tl, c.slot, y)}); });
+  if (res.correct) { tl.splice(game.slot, 0, game.current); res.to = game.turn; }
+  else {
+    const win = res.chal.find(c => c.ok);
+    if (win) { insertSorted(game.players[win.p].timeline, game.current); res.to = win.p; }
+    else game.discard.push(game.current);
+  }
+  game.result = res; game.phase = 'reveal'; ui.pendingChallenger = null;
+  saveGame(); render();
+  if (res.correct || res.to !== null) burst(18);
+}
+function nextTurn() {
+  const t = game.target;
+  const order = [game.turn, ...game.players.map((_, i) => i).filter(i => i !== game.turn)];
+  const w = order.find(i => game.players[i].timeline.length >= t);
+  if (w !== undefined) { game.winner = w; game.phase = 'win'; saveGame(); pause(); render(); confettiRain(); return; }
+  game.turn = (game.turn + 1) % game.players.length;
+  if (game.turn === 0) game.round++;
+  // Bewust NIET pauzeren: een gepauzeerde Spotify-app op iOS wordt na korte tijd in slaap gezet
+  // en verdwijnt dan uit de apparatenlijst. Het nummer speelt door tot het volgende start.
+  game.phase = 'handoff'; game.current = null; playing = false; setStatus('idle', ''); saveGame(); render();
+}
+function endByCount() {
+  let best = 0; game.players.forEach((p, i) => { if (p.timeline.length > game.players[best].timeline.length) best = i; });
+  game.winner = best; game.phase = 'win'; saveGame(); render(); toast('De stapel is op!'); confettiRain();
+}
+function skipSong() {
+  const p = curP(); if (p.tokens < 1) return;
+  p.tokens--; game.discard.push(game.current); game.current = draw();
+  if (!game.current) return endByCount();
+  game.slot = null; saveGame(); render(); play(true); toast('Nieuw nummer!');
+}
+function buyCard() {
+  const p = curP(); if (p.tokens < 3) return;
+  const id = draw(); if (!id) return toast('Geen kaartjes meer op de stapel.', true);
+  p.tokens -= 3; insertSorted(p.timeline, id);
+  if (game.slot !== null) game.slot = null;
+  saveGame(); render();
+  const t = T(id); toast(`Gratis kaartje: ${t.title} (${yearOf(t)})`);
+  if (p.timeline.length >= game.target) { game.winner = game.turn; game.phase = 'win'; saveGame(); pause(); render(); confettiRain(); }
+}
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function render() {
+  const s = ui.screen;
+  const html = s === 'library' ? viewLibrary() : s === 'setup' ? viewSetup() : s === 'game' && game ? viewGame()
+    : s === 'host' && room ? viewHost() : s === 'join' ? viewJoin() : s === 'guest' && guest ? viewGuest() : viewHome();
+  document.body.classList.toggle('wide', s === 'host');
+  $('#app').innerHTML = html;
+  if (s === 'host') drawQr();
+  const b = document.querySelector('.bottom'); document.body.style.paddingBottom = b ? '0' : '';
+}
+
+function viewHome() {
+  const cid = clientId(), li = loggedIn(), n = playable().length;
+  const resumable = game && game.phase !== 'win';
+  return `
+  <div class="logo">HITSTER<span>THUIS</span></div>
+  <p class="muted">Raad het jaar, bouw je tijdlijn, win het spel.</p>
+
+  ${resumable ? `<button class="btn primary block" data-a="resume" style="margin-top:14px">▶ Spel hervatten · ronde ${game.round}</button>` : ''}
+
+  <button class="btn cyan block" data-a="join" style="margin-top:14px">📲 Meedoen met een room-code</button>
+  ${load(K.guest, null) ? `<button class="btn ghost block" data-a="grejoin" style="margin-top:8px">↩ Terug naar room ${esc(load(K.guest).code)}</button>` : ''}
+
+  <div class="panel stack">
+    <h3>1 · Spotify</h3>
+    ${!cid ? `
+      <label class="lbl">Client ID uit het Spotify Developer Dashboard</label>
+      <input type="text" id="cid" placeholder="bijv. 3f9a…" autocapitalize="off" autocorrect="off">
+      <label class="lbl" style="margin-top:8px">Redirect URI (zet deze exact in het Dashboard)</label>
+      <code class="box">${esc(CONFIG.REDIRECT_URI)}</code>
+      <button class="btn block" data-a="savecid">Opslaan</button>`
+    : !li ? `
+      <button class="btn good block" data-a="login">Inloggen met Spotify</button>
+      <p class="muted small">Redirect URI: <code>${esc(CONFIG.REDIRECT_URI)}</code> · <a href="#" data-a="resetcid">Client ID wijzigen</a></p>`
+    : `
+      <div class="row"><span class="grow">Ingelogd${me ? ' als <b>' + esc(me.display_name || me.id) + '</b>' : ''} <span class="ok">✓</span></span>
+      <button class="btn sm ghost" data-a="logout">Uitloggen</button></div>
+      <div class="row"><button class="btn sm grow" data-a="devices">🔊 Apparaat kiezen</button><button class="btn sm grow" data-a="diag">Spotify testen</button></div>`}
+  </div>
+
+  <div class="panel stack">
+    <h3>2 · Nummers</h3>
+    ${lib ? `<div class="row"><div class="grow"><b>${esc(lib.name)}</b><div class="muted small">${lib.tracks.length} nummers · ${n} speelbaar${lib.source === 'demo' ? ' · demo zonder audio' : ''}</div></div>
+      <button class="btn sm" data-a="library">Kaartjes beheren</button></div><hr>` : ''}
+    ${li ? `<label class="lbl">Link naar jullie playlist</label>
+      <div class="row"><input type="text" id="pl" placeholder="https://open.spotify.com/playlist/…" autocapitalize="off" autocorrect="off" value="${lib?.source === 'spotify' ? 'https://open.spotify.com/playlist/' + esc(lib.playlistId) : ''}">
+      <button class="btn" id="plbtn" data-a="loadpl">Laden</button></div>
+      <p class="muted small">Alleen playlists die jij bezit of waaraan je meewerkt (regel van Spotify).</p>` : `<p class="muted small">Log in om jullie playlist te laden.</p>`}
+    <button class="btn ghost block" data-a="demo">Probeer de demo (zonder Spotify)</button>
+  </div>
+
+  <div class="panel stack">
+    <h3>3 · Kies een spelmodus</h3>
+    <button class="btn primary mode" data-a="setup" ${n < 7 ? 'disabled' : ''}><span class="ic">📱</span><span><b>Eén telefoon</b><span class="d">Geef de telefoon door. De muziek speelt op deze telefoon of een speaker.</span></span></button>
+    <button class="btn mode" data-a="host" ${n < 7 ? 'disabled' : ''}><span class="ic">💻</span><span><b>Multiplayer</b><span class="d">Deze laptop is het hoofdscherm en speelt de muziek. Iedereen speelt op z'n eigen telefoon met een room-code.</span></span></button>
+    ${load(K.room, null) ? `<button class="btn ghost block" data-a="hresume" ${n < 7 ? 'disabled' : ''}>↩ Room ${esc(load(K.room).code)} hervatten</button>` : ''}
+    ${n < 7 ? '<p class="muted small">Laad eerst een playlist of de demo.</p>' : ''}
+    <button class="btn ghost block" data-a="rules">Spelregels</button>
+    <p class="muted small" style="text-align:center;margin:6px 0 0">Versie ${APP_VERSION}</p>
+  </div>`;
+}
+
+function viewLibrary() {
+  const q = ui.libQuery.toLowerCase(), f = ui.libFilter;
+  let rows = (lib?.tracks || []).filter(t => !q || (t.title + ' ' + t.artist).toLowerCase().includes(q));
+  if (f === 'changed') rows = rows.filter(t => ov[t.id]);
+  if (f === 'excl') rows = rows.filter(isExcluded);
+  if (f === 'noyear') rows = rows.filter(t => !yearOf(t));
+  const nChanged = Object.values(ov).filter(o => o.year).length, nEx = Object.values(ov).filter(o => o.excluded).length;
+  return `
+  <div class="topbar"><button class="btn sm" data-a="home">‹ Terug</button><h2>Kaartjes</h2></div>
+  <p class="muted small">Spotify geeft vaak het jaar van een remaster of verzamelalbum. Pas het jaar aan naar het originele uitbrengjaar of sluit een nummer uit. Wijzigingen worden automatisch bewaard.</p>
+  <div class="row wrap" style="margin:10px 0">
+    <span class="pill">${playable().length} speelbaar</span><span class="pill">${nChanged} jaar aangepast</span><span class="pill">${nEx} uitgesloten</span>
+  </div>
+  <div class="row wrap" style="margin-bottom:10px">
+    <button class="btn sm" data-a="export">⬇ Exporteren</button>
+    <label class="btn sm">⬆ Importeren<input type="file" id="imp" accept="application/json,.json" hidden></label>
+  </div>
+  <input type="search" id="libq" placeholder="Zoek titel of artiest" value="${esc(ui.libQuery)}">
+  <div class="row wrap" style="margin:10px 0">
+    ${[['all','Alles'],['changed','Aangepast'],['excl','Uitgesloten'],['noyear','Geen jaar']].map(([k, l]) => `<button class="btn sm ${f === k ? 'cyan' : 'ghost'}" data-a="libf" data-f="${k}">${l}</button>`).join('')}
+  </div>
+  <div id="librows">${rows.map(t => {
+    const o = ov[t.id] || {};
+    return `<div class="lib-row ${o.excluded ? 'off' : ''}">
+      <input type="checkbox" class="chk" data-c="incl" data-id="${t.id}" ${o.excluded ? '' : 'checked'} aria-label="Meespelen">
+      ${t.img ? `<img src="${esc(t.img)}" alt="" loading="lazy">` : `<div class="ph"></div>`}
+      <div class="grow"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.title)}</div>
+        <div class="muted small" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.artist)}${o.year ? ` · Spotify: ${t.year || '?'}` : ''}</div></div>
+      <input type="number" inputmode="numeric" data-c="year" data-id="${t.id}" value="${yearOf(t) || ''}" class="${o.year ? 'changed' : ''}" min="1900" max="2100">
+    </div>`;
+  }).join('') || '<p class="muted">Geen nummers.</p>'}</div>`;
+}
+
+function viewSetup() {
+  const names = load(K.names, ['Speler 1', 'Speler 2']);
+  return `
+  <div class="topbar"><button class="btn sm" data-a="home">‹ Terug</button><h2>Nieuw spel</h2></div>
+  <div class="panel stack">
+    <h3>Spelers of teams</h3>
+    <div id="names" class="stack">${names.map((n, i) => `<div class="row"><input type="text" class="pname" value="${esc(n)}" maxlength="18">
+      ${names.length > 2 ? `<button class="btn sm ghost" data-a="rmname" data-i="${i}" aria-label="Verwijder">✕</button>` : ''}</div>`).join('')}</div>
+    ${names.length < 8 ? `<button class="btn ghost block" data-a="addname">+ Speler toevoegen</button>` : ''}
+  </div>
+  <div class="panel stack">
+    <div class="row"><div class="grow"><b>Kaartjes om te winnen</b></div>
+      <div class="stepper"><button class="btn sm" data-a="tgt" data-d="-1">−</button><b>${settings.target}</b><button class="btn sm" data-a="tgt" data-d="1">+</button></div></div>
+    <hr>
+    <div class="row"><div class="grow"><b>Tokens</b><div class="muted small">Overslaan, Hitster! roepen en kaartjes kopen</div></div>
+      <label class="switch"><input type="checkbox" id="tok" ${settings.tokens ? 'checked' : ''}><span></span></label></div>
+  </div>
+  ${lib?.source === 'spotify' ? `<div class="panel stack">
+    <b>Muziek afspelen</b>
+    <div class="row"><button class="btn sm grow ${audioMode() === 'app' ? 'cyan' : 'ghost'}" data-a="mode" data-m="app">📱 In deze app</button>
+      <button class="btn sm grow ${audioMode() === 'spotify' ? 'cyan' : 'ghost'}" data-a="mode" data-m="spotify">🔊 Via Spotify-app</button></div>
+    ${audioMode() === 'app' ? `<div class="small muted">De muziek speelt rechtstreeks in Hitster Thuis. De Spotify-app is niet nodig. Zet het geluid van je telefoon aan (ook de stil-knop).</div>${sdkStatHtml()}`
+    : `<div class="row"><div class="grow muted small">Afspelen op: ${esc(load(K.dev, null)?.name || 'het apparaat waar Spotify nu speelt')}</div><button class="btn sm" data-a="devices">Kies</button></div>
+    <div class="small muted">Handig voor een laptop, tv of speaker. Op een iPhone: zet eerst een nummer aan in de Spotify-app en laat het spelen.</div>
+    <div class="row"><a class="btn sm grow" href="spotify:">Open Spotify</a><button class="btn sm grow" data-a="checkdev">Controleer</button></div>
+    <div id="devcheck" class="small"></div>`}</div>` : ''}
+  <div class="bottom"><div class="inner"><button class="btn primary block" data-a="start">Start spel · ${playable().length} nummers</button></div></div>`;
+}
+
+function scoresBar() {
+  return `<div class="scores">${game.players.map((p, i) => `<div class="score ${i === game.turn ? 'me' : ''}">
+    <b>${esc(p.name)}</b><span class="n">${p.timeline.length}</span><span class="muted">/${game.target}</span>${game.tokens ? ` <span class="coin"></span> ${p.tokens}` : ''}</div>`).join('')}</div>`;
+}
+function cardHtml(c, extra = '') {
+  return `<div class="song ${extra}" style="--c:${decColor(c.year)}"><div class="yr">${c.year}</div><div class="info"><div class="t">${esc(c.title)}</div><div class="a">${esc(c.artist)}</div></div></div>`;
+}
+function songRow(id, extra = '') {
+  const t = T(id);
+  return cardHtml({title: t?.title, artist: t?.artist, year: yearOf(t)}, extra);
+}
+function timelineView(mode) {
+  const p = curP(), tl = p.timeline;
+  const chalAt = new Map(game.challenges.map(c => [c.slot, c.p]));
+  let h = `<div class="tl"><div class="tl-end">▲ ouder</div>`;
+  for (let i = 0; i <= tl.length; i++) {
+    if (mode === 'place') {
+      h += game.slot === i
+        ? `<div class="song mys new" data-a="slot" data-i="${i}"><div class="yr">?</div><div class="info"><div class="t">Jouw gok</div><div class="a">Tik op een andere plek om te verplaatsen</div></div></div>`
+        : `<button class="slot" data-a="slot" data-i="${i}">＋ hier plaatsen</button>`;
+    } else if (mode === 'challenge') {
+      if (game.slot === i) h += `<div class="song mys"><div class="yr">?</div><div class="info"><div class="t">${esc(p.name)}</div><div class="a">gok van de speler aan de beurt</div></div></div>`;
+      else if (chalAt.has(i)) h += `<div class="song chal"><div class="yr">HIT<br>STER!</div><div class="info"><div class="t">${esc(game.players[chalAt.get(i)].name)}</div><div class="a">claimt deze plek</div></div></div>`;
+      else h += ui.pendingChallenger !== null ? `<button class="slot hot" data-a="chalslot" data-i="${i}">＋ ${esc(game.players[ui.pendingChallenger].name)} kiest hier</button>` : `<div style="height:6px"></div>`;
+    }
+    if (i < tl.length) h += songRow(tl[i]);
+  }
+  return h + `<div class="tl-end">▼ nieuwer</div></div>`;
+}
+
+function viewGame() {
+  const p = curP();
+  const top = `<div class="topbar"><button class="btn sm" data-a="home">☰</button><h2>Ronde ${game.round}</h2>
+    <button class="btn sm" data-a="timelines">Tijdlijnen</button>${lib.source === 'spotify' ? `<button class="btn sm" data-a="devices" aria-label="Apparaat">🔊</button>` : ''}</div>`;
+
+  if (game.phase === 'handoff') return `${top}${scoresBar()}
+    <div class="handoff"><p class="muted">Geef de telefoon aan</p><div class="who">${esc(p.name)}</div>
+      <p class="muted small">${p.timeline.length} van ${game.target} kaartjes${game.tokens ? ` · ${p.tokens} tokens` : ''}</p>
+      <button class="btn primary block" data-a="startturn">Ik ben ${esc(p.name)} — start!</button>
+      <p class="muted small">Tip: leg de telefoon met de Spotify-app weg of speel af op een speaker, zodat niemand de titel ziet.</p></div>`;
+
+  if (game.phase === 'listen') return `${top}${scoresBar()}
+    <div class="hero"><div class="muted small">${esc(p.name)} is aan de beurt</div>
+      <div class="q">?</div><div class="eq ${playing ? '' : 'off'}"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="row"><button class="btn grow" data-a="toggle">${playing ? '⏸ Pauze' : '▶ Afspelen'}</button><button class="btn grow" data-a="replay">⏮ Vanaf begin</button></div>
+      ${statusHtml()}
+      ${game.tokens ? `<div class="row" style="margin-top:10px"><button class="btn sm grow" data-a="skip" ${p.tokens < 1 ? 'disabled' : ''}>Overslaan · <span class="coin"></span> 1</button>
+        <button class="btn sm grow" data-a="buy" ${p.tokens < 3 ? 'disabled' : ''}>Kaartje kopen · <span class="coin"></span> 3</button></div>` : ''}
+    </div>
+    <h3 style="margin-top:18px">Waar past dit nummer in jouw tijdlijn?</h3>
+    ${timelineView('place')}
+    <div class="bottom"><div class="inner"><button class="btn primary block" data-a="lock" ${game.slot === null ? 'disabled' : ''}>${game.slot === null ? 'Kies eerst een plek' : 'Vastzetten'}</button></div></div>`;
+
+  if (game.phase === 'challenge') {
+    const can = game.players.map((q, i) => ({q, i})).filter(({q, i}) => i !== game.turn && q.tokens > 0 && !game.challenges.some(c => c.p === i));
+    return `${top}${scoresBar()}
+    <div class="hero"><div class="q" style="font-size:34px">HITSTER!</div>
+      <p class="muted small" style="margin-top:8px">Denkt iemand dat ${esc(p.name)} het fout heeft? Roep Hitster! (kost 1 token) en kies een andere plek. Zit ${esc(p.name)} fout en jij goed, dan krijg jij het kaartje.</p>
+      ${ui.pendingChallenger !== null ? `<p><b>${esc(game.players[ui.pendingChallenger].name)}</b>, tik hieronder je plek. <a href="#" data-a="chalcancel">Annuleer</a></p>` :
+        can.length ? `<div class="row wrap" style="justify-content:center">${can.map(({q, i}) => `<button class="btn sm" data-a="chal" data-i="${i}">${esc(q.name)} <span class="coin"></span>${q.tokens}</button>`).join('')}</div>` : '<p class="muted small">Niemand anders kan nog Hitster! roepen.</p>'}
+    </div>
+    ${timelineView('challenge')}
+    <div class="bottom"><div class="inner"><button class="btn ghost" data-a="unlock">‹ Terug</button><button class="btn primary grow" data-a="reveal">Omdraaien!</button></div></div>`;
+  }
+
+  if (game.phase === 'reveal') {
+    const t = T(game.current), y = yearOf(t), r = game.result;
+    const tlOwner = r.to !== null ? r.to : game.turn;
+    const tl = game.players[tlOwner].timeline;
+    let verdict = r.correct ? `<span class="ok">Goed! 🎉</span>` : r.to !== null ? `<span class="err">Fout…</span> maar <b>${esc(game.players[r.to].name)}</b> pakt hem!` : `<span class="err">Helaas, fout!</span>`;
+    return `${top}${scoresBar()}
+    <div class="flip"><div class="face big" style="--c:${decColor(y)}">
+      ${t.imgL ? `<img src="${esc(t.imgL)}" alt="">` : `<div class="noimg">${String(y).slice(2)}</div>`}
+      <div class="y">${y}</div><div class="t">${esc(t.title)}</div><div class="a">${esc(t.artist)}</div>
+      ${lib.source === 'spotify' && y !== t.year ? `<div class="muted small" style="margin-top:6px">(Spotify zegt ${t.year || '?'}, aangepast in kaartjesbeheer)</div>` : ''}
+    </div></div>
+    <div class="verdict">${verdict}</div>
+    ${r.chal.length ? `<p class="muted small" style="text-align:center">${r.chal.map(c => `${esc(game.players[c.p].name)}: ${c.ok ? '<span class="ok">goed</span>' : '<span class="err">fout</span>'}`).join(' · ')}</p>` : ''}
+    ${game.tokens ? `<button class="btn block" data-a="guessed" ${game.guessed || p.tokens >= 5 ? 'disabled' : ''} style="margin:10px 0">${game.guessed ? '✓ Token gekregen' : `Titel + artiest goed geraden? +1 <span class="coin"></span>`}</button>` : ''}
+    ${r.to !== null ? `<h3 style="margin-top:14px">Tijdlijn van ${esc(game.players[tlOwner].name)}</h3>
+      <div class="tl">${tl.map(id => songRow(id, id === game.current ? 'new' : '')).join('')}</div>` : `
+      <h3 style="margin-top:14px">Hier hoorde hij</h3><div class="tl">${(() => {
+        const ix = (() => { let i = tl.findIndex(x => yearOf(x) > y); return i < 0 ? tl.length : i; })();
+        const view = tl.slice(); view.splice(ix, 0, game.current);
+        return view.map(id => songRow(id, id === game.current ? 'wrong new' : '')).join('');
+      })()}</div>`}
+    <div class="bottom"><div class="inner"><button class="btn primary block" data-a="next">Volgende beurt</button></div></div>`;
+  }
+
+  if (game.phase === 'win') {
+    const w = game.players[game.winner];
+    return `${top}
+    <div style="text-align:center;margin:20px 0"><div class="muted">De winnaar is</div><div class="logo" style="font-size:40px;word-break:break-word">${esc(w.name)}</div>
+      <p class="muted">${w.timeline.length} kaartjes in ${game.round} rondes</p></div>
+    <div class="tl">${w.timeline.map(id => songRow(id)).join('')}</div>
+    <div class="bottom"><div class="inner"><button class="btn ghost" data-a="home">Menu</button><button class="btn primary grow" data-a="again">Opnieuw spelen</button></div></div>`;
+  }
+  return top;
+}
+
+/* ---------- modals ---------- */
+function modal(html) { $('#sheet').innerHTML = html + `<button class="btn ghost block" data-a="close" style="margin-top:12px">Sluiten</button>`; $('#modal').classList.add('open'); }
+function closeModal() { $('#modal').classList.remove('open'); }
+function showTimelines() {
+  modal(`<h2>Tijdlijnen</h2>${game.players.map((p, i) => `<h3 style="margin-top:16px">${esc(p.name)} · ${p.timeline.length}/${game.target}${game.tokens ? ' · <span class="coin"></span> ' + p.tokens : ''}</h3>
+    <div class="tl">${p.timeline.map(id => songRow(id)).join('')}</div>`).join('')}`);
+}
+function showRules() {
+  modal(`<h2>Spelregels</h2><ol class="rules">
+    <li>Iedereen begint met één open kaartje op zijn tijdlijn.</li>
+    <li>Om de beurt speelt er een nummer. De speler aan de beurt kiest waar het in zijn tijdlijn hoort: ervoor, erna of ertussen.</li>
+    <li>Na <b>Vastzetten</b> en <b>Omdraaien</b> zie je titel, artiest en jaar. Klopt de plek? Dan blijft het kaartje liggen. Zo niet, dan is hij weg.</li>
+    <li>Zelfde jaar naast elkaar telt als goed.</li>
+    <li>Wie als eerste het doel haalt (standaard 10 kaartjes), wint.</li>
+    </ol><h3>Met tokens</h3><ol class="rules">
+    <li>Iedereen start met 2 tokens (max 5).</li>
+    <li>Noem je titel én artiest goed vóór het omdraaien? +1 token (de groep beslist).</li>
+    <li>1 token: nummer overslaan.</li>
+    <li>1 token: <b>Hitster!</b> roepen en een andere plek kiezen op de tijdlijn van de speler aan de beurt. Zit die fout en jij goed, dan is het kaartje van jou.</li>
+    <li>3 tokens: een gratis kaartje, direct goed geplaatst.</li></ol>`);
+}
+
+/* ---------- export / import ---------- */
+function exportJson() {
+  const data = {app: 'hitster-thuis', version: 1, playlistId: lib?.playlistId || null, exported: new Date().toISOString(),
+    tracks: (lib?.tracks || []).map(t => ({id: t.id, title: t.title, artist: t.artist, spotifyYear: t.year, year: yearOf(t), excluded: isExcluded(t)}))};
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'}));
+  a.download = 'hitster-jaartallen.json'; document.body.appendChild(a); a.click(); a.remove();
+  toast('Bestand opgeslagen ✓');
+}
+function importJson(file) {
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result); let n = 0;
+      for (const x of d.tracks || []) {
+        if (!T(x.id)) continue;
+        setOverride(x.id, {year: x.year ? +x.year : undefined, excluded: !!x.excluded}); n++;
+      }
+      toast(`${n} kaartjes bijgewerkt ✓`); render();
+    } catch { toast('Ongeldig bestand.', true); }
+  };
+  r.readAsText(file);
+}
+
+/* ---------- demo ---------- */
+const DEMO = [
+  ['Jailhouse Rock','Elvis Presley',1957],['Johnny B. Goode','Chuck Berry',1958],['(I Can\'t Get No) Satisfaction','The Rolling Stones',1965],
+  ['Hey Jude','The Beatles',1968],['Radar Love','Golden Earring',1973],['Bohemian Rhapsody','Queen',1975],['Dancing Queen','ABBA',1976],
+  ['Stayin\' Alive','Bee Gees',1977],['September','Earth, Wind & Fire',1978],['Could You Be Loved','Bob Marley & The Wailers',1980],
+  ['Zij gelooft in mij','André Hazes',1981],['Africa','Toto',1982],['Eye of the Tiger','Survivor',1982],['Billie Jean','Michael Jackson',1983],
+  ['Take On Me','a-ha',1985],['Running Up That Hill','Kate Bush',1985],['I Wanna Dance with Somebody','Whitney Houston',1987],
+  ['Like a Prayer','Madonna',1989],['Smells Like Teen Spirit','Nirvana',1991],['Dromen zijn bedrog','Marco Borsato',1994],
+  ['Wonderwall','Oasis',1995],['Wannabe','Spice Girls',1996],['...Baby One More Time','Britney Spears',1998],['Lose Yourself','Eminem',2002],
+  ['Hey Ya!','Outkast',2003],['Crazy in Love','Beyoncé',2003],['Rehab','Amy Winehouse',2006],['Viva la Vida','Coldplay',2008],
+  ['Rolling in the Deep','Adele',2010],['Somebody That I Used to Know','Gotye',2011],['Get Lucky','Daft Punk',2013],['Wake Me Up','Avicii',2013],
+  ['Uptown Funk','Mark Ronson ft. Bruno Mars',2014],['Shape of You','Ed Sheeran',2017],['Bad Guy','Billie Eilish',2019],
+  ['Blinding Lights','The Weeknd',2019],['Levitating','Dua Lipa',2020],['As It Was','Harry Styles',2022],
+];
+function dropStaleGame() {
+  if (game && !game.players.every(p => p.timeline.every(id => T(id)))) { game = null; del(K.game); }
+}
+function loadDemo() {
+  lib = {source: 'demo', playlistId: null, name: 'Demo-nummers', tracks: DEMO.map(([title, artist, year], i) => ({id: 'demo' + i, uri: '', title, artist, year, img: '', imgL: '', dur: 200000}))};
+  save(K.lib, lib); dropStaleGame(); toast('Demo geladen: ' + DEMO.length + ' nummers'); render();
+}
+
+/* ---------- confetti ---------- */
+function burst(n) { for (let i = 0; i < n; i++) spawn(Math.random() * 100, Math.random() * 1.2 + 1.2); }
+function confettiRain() { for (let i = 0; i < 90; i++) setTimeout(() => spawn(Math.random() * 100, Math.random() * 2 + 2), i * 30); }
+function spawn(x, d) {
+  const c = document.createElement('div'); c.className = 'confetti';
+  c.style.left = x + 'vw'; c.style.background = ['#ff3d9a', '#00e5ff', '#ffd23f', '#a3ff3d', '#b26bff'][rand(0, 5)];
+  c.style.animationDuration = d + 's'; c.style.borderRadius = Math.random() > .5 ? '50%' : '2px';
+  document.body.appendChild(c); setTimeout(() => c.remove(), d * 1000 + 100);
+}
+
+/* =========================================================
+   MULTIPLAYER — laptop = host (scherm + muziek), telefoons = spelers
+   Verbinding: PeerJS (WebRTC). Geen eigen server nodig.
+   ========================================================= */
+const PEER_PREFIX = 'hitster-thuis-v1-';
+const LIBS = {
+  peer: ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'],
+  qr: ['https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js', 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js', 'https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js'],
+};
+const libLoads = {};
+function loadLib(name, ready) {
+  if (ready()) return Promise.resolve();
+  if (!libLoads[name]) libLoads[name] = (async () => {
+    for (const src of LIBS[name]) {
+      try {
+        await new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = src; sc.onload = ok; sc.onerror = no; document.head.appendChild(sc); });
+        if (ready()) return;
+      } catch {}
+    }
+    delete libLoads[name];
+    throw new Error('Verbindingsbibliotheek kon niet laden. Check je internet.');
+  })();
+  return libLoads[name];
+}
+const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+const newCode = () => Array.from(crypto.getRandomValues(new Uint8Array(4)), x => CODE_CHARS[x % CODE_CHARS.length]).join('');
+const joinUrl = () => CONFIG.REDIRECT_URI + '?room=' + (room?.code || '');
+
+let wl = null;
+async function wakeLock() { try { if ('wakeLock' in navigator && document.visibilityState === 'visible' && (!wl || wl.released)) wl = await navigator.wakeLock.request('screen'); } catch {} }
+
+/* ---------------- HOST ---------------- */
+let room = load(K.room, null);       // {code, players:[{pid,name}]}
+let hostPeer = null, hostNet = 'uit';
+const conns = new Map();             // pid -> verbinding
+const seen = new Map();              // pid -> laatst gehoord (ms)
+const isOnline = pid => conns.has(pid) && Date.now() - (seen.get(pid) || 0) < 16000;
+const hostRender = () => { if (ui.screen === 'host') render(); };
+
+function hostOpen(resume) {
+  const n = playable().length;
+  if (n < 7) return toast('Laad eerst een playlist of de demo.', true);
+  if (!resume || !room) {
+    if (room && hostPeer) hostClose(true);
+    room = {code: newCode(), players: []}; del(K.mpgame);
+  }
+  save(K.room, room);
+  const g = load(K.mpgame, null);
+  game = g && g.mp ? g : null;
+  ui.screen = 'host'; render(); window.scrollTo(0, 0);
+  wakeLock();
+  if (!hostPeer || hostPeer.destroyed || hostPeer.id !== PEER_PREFIX + room.code) hostConnect();
+  if (loggedIn() && lib?.source === 'spotify' && audioMode() === 'app') initSdk();
+  mpBroadcast();
+}
+// Terug naar het menu: room blijft open, het spel staat "op pauze" voor de telefoons.
+function hostLeave() { game = load(K.game, null); setTimeout(mpBroadcast, 0); }
+function hostClose(silent) {
+  for (const c of conns.values()) { try { c.send({t: 'closed'}); } catch {} }
+  setTimeout(() => { try { hostPeer?.destroy(); } catch {} hostPeer = null; conns.clear(); }, 300);
+  room = null; del(K.room); del(K.mpgame); hostNet = 'uit';
+  if (!silent) { game = load(K.game, null); ui.screen = 'home'; render(); }
+}
+async function hostConnect(tries = 0) {
+  if (!room) return;
+  hostNet = 'verbinden'; hostRender();
+  try { await loadLib('peer', () => window.Peer); } catch (e) { hostNet = e.message; hostRender(); return; }
+  if (!room) return;
+  try { hostPeer?.destroy(); } catch {}
+  const pr = hostPeer = new Peer(PEER_PREFIX + room.code);
+  const retry = (ms) => setTimeout(() => { if (hostPeer === pr && room) hostConnect(tries + 1); }, ms);
+  pr.on('open', () => { if (hostPeer !== pr) return; hostNet = 'online'; hostRender(); });
+  pr.on('connection', c => { if (hostPeer === pr) hostAccept(c); });
+  pr.on('disconnected', () => { if (hostPeer !== pr || pr.destroyed) return; hostNet = 'verbinden'; hostRender(); setTimeout(() => { try { if (!pr.destroyed) pr.reconnect(); } catch {} }, 1500); });
+  pr.on('error', e => {
+    if (hostPeer !== pr) return;
+    const t = e?.type || '';
+    if (t === 'peer-unavailable') return;
+    if (t === 'unavailable-id') { hostNet = 'verbinden'; hostRender(); if (tries < 25) retry(3000); else { hostNet = 'Room-code is bezet. Maak een nieuwe room.'; hostRender(); } return; }
+    if (['network', 'server-error', 'socket-error', 'socket-closed', 'disconnected'].includes(t)) { hostNet = 'verbinden'; hostRender(); retry(3000); return; }
+    hostNet = 'Fout: ' + (t || e?.message); hostRender();
+  });
+}
+function hostAccept(c) {
+  let pid = null;
+  c.on('data', m => {
+    if (!m || typeof m !== 'object') return;
+    if (pid) seen.set(pid, Date.now());
+    if (m.t === 'hello') pid = hostJoin(m, c);
+    else if (m.t === 'ping') { try { c.send({t: 'pong'}); } catch {} }
+    else if (m.t === 'act' && pid && conns.get(pid) === c) hostAct(pid, m);
+  });
+  c.on('close', () => { if (pid && conns.get(pid) === c) { conns.delete(pid); hostRender(); mpBroadcast(); } });
+  c.on('error', () => {});
+}
+const gameRunning = () => !!(load(K.mpgame, null)?.mp && load(K.mpgame).phase !== 'win');
+function hostJoin(m, c) {
+  if (!room) return null;
+  const name = String(m.name || '').trim().slice(0, 18) || 'Speler';
+  const pidIn = String(m.pid || '').slice(0, 40);
+  let pl = room.players.find(p => p.pid === pidIn) || room.players.find(p => p.name.toLowerCase() === name.toLowerCase());
+  const fail = msg => { try { c.send({t: 'err', msg}); setTimeout(() => c.close(), 300); } catch {} return null; };
+  if (pl && pl.pid !== pidIn && isOnline(pl.pid)) return fail(`De naam "${name}" is al bezet. Kies een andere.`);
+  if (!pl) {
+    if (gameRunning()) return fail('Het spel is al begonnen. Vraag de host om na dit spel terug te gaan naar de lobby.');
+    if (room.players.length >= 8) return fail('De room is vol (maximaal 8 spelers).');
+    pl = {pid: pidIn, name}; room.players.push(pl);
+  } else if (!gameRunning()) pl.name = name;
+  if (pl.pid !== pidIn) {          // zelfde naam, nieuw toestel/browser: neemt de plek over
+    const g = load(K.mpgame, null);
+    if (g?.mp) { g.players.forEach(gp => { if (gp.pid === pl.pid) gp.pid = pidIn; }); save(K.mpgame, g); if (game?.mp) game = g; }
+    conns.delete(pl.pid); pl.pid = pidIn;
+  }
+  const old = conns.get(pidIn); if (old && old !== c) { try { old.close(); } catch {} }
+  conns.set(pidIn, c); seen.set(pidIn, Date.now());
+  save(K.room, room);
+  try { c.send({t: 'welcome', pid: pidIn, code: room.code}); } catch {}
+  hostRender(); mpBroadcast();
+  return pidIn;
+}
+function hostAct(pid, m) {
+  if (ui.screen !== 'host' || !game?.mp) return;
+  const me = game.players.findIndex(p => p.pid === pid); if (me < 0) return;
+  const active = me === game.turn, ph = game.phase, i = parseInt(m.i), len = curP().timeline.length;
+  switch (m.a) {
+    case 'startturn': if (active && ph === 'handoff') startTurn(); break;
+    case 'slot': if (active && ph === 'listen' && i >= 0 && i <= len) { game.slot = i; saveGame(); render(); } break;
+    case 'lock': if (active && ph === 'listen' && game.slot !== null) lockIn(); break;
+    case 'unlock': if (active && ph === 'challenge') actions.unlock(); break;
+    case 'chal':
+      if (!active && ph === 'challenge' && game.tokens && game.players[me].tokens > 0 && i >= 0 && i <= len && i !== game.slot
+          && !game.challenges.some(c => c.p === me || c.slot === i)) { game.challenges.push({p: me, slot: i}); saveGame(); render(); }
+      break;
+    case 'reveal': if (active && ph === 'challenge') reveal(); break;
+    case 'guessed': if (active && ph === 'reveal') actions.guessed(); break;
+    case 'next': if (active && ph === 'reveal') nextTurn(); break;
+    case 'skip': if (active && ph === 'listen') skipSong(); break;
+    case 'buy': if (active && ph === 'listen') buyCard(); break;
+    case 'replay': if (active && (ph === 'listen' || ph === 'challenge')) actions.replay(); break;
+  }
+}
+function trackInfo(id) { const t = T(id); return t ? {title: t.title, artist: t.artist, year: yearOf(t), imgL: t.imgL || ''} : {title: '?', artist: '', year: 0}; }
+function publicState() {
+  const base = {code: room?.code, ps: pstat.s, lobby: (room?.players || []).map(p => ({pid: p.pid, name: p.name, online: isOnline(p.pid)}))};
+  if (ui.screen !== 'host') return {...base, phase: load(K.mpgame, null)?.mp ? 'away' : 'lobby'};
+  if (!game?.mp) return {...base, phase: 'lobby'};
+  const show = game.phase === 'reveal' || game.phase === 'win';
+  return {...base, phase: game.phase, turn: game.turn, round: game.round, target: game.target, tokens: game.tokens, slot: game.slot,
+    challenges: game.challenges, result: game.result, winner: game.winner, guessed: game.guessed,
+    current: show && game.current ? trackInfo(game.current) : null,
+    players: game.players.map(p => ({pid: p.pid, name: p.name, tokens: p.tokens, online: isOnline(p.pid), timeline: p.timeline.map(trackInfo)}))};
+}
+let bcastT = null;
+function mpBroadcast() {
+  if (!room || !conns.size) return;
+  clearTimeout(bcastT);
+  bcastT = setTimeout(() => {
+    const st = publicState();
+    for (const c of conns.values()) { try { if (c.open) c.send({t: 'state', s: st}); } catch {} }
+  }, 30);
+}
+// Online-stipjes bijwerken (telefoons die in slaap vallen sluiten de verbinding niet altijd netjes)
+let onlineSig = '';
+setInterval(() => {
+  if (!room) return;
+  const sig = room.players.map(p => isOnline(p.pid) ? 1 : 0).join('');
+  if (sig !== onlineSig) { onlineSig = sig; hostRender(); mpBroadcast(); }
+}, 4000);
+
+let qrCache = {code: null, url: null, failed: false};
+async function drawQr() {
+  const el = $('#qr'); if (!el || !room) return;
+  if (qrCache.code === room.code && qrCache.url) { el.innerHTML = `<img src="${qrCache.url}" alt="QR-code om te joinen">`; return; }
+  if (qrCache.failed) return;
+  try { await loadLib('qr', () => window.QRCode); } catch { qrCache.failed = true; return; }
+  const tmp = document.createElement('div');
+  try { new QRCode(tmp, {text: joinUrl(), width: 240, height: 240, correctLevel: QRCode.CorrectLevel.M}); } catch { return; }
+  const cv = tmp.querySelector('canvas'); const url = cv ? cv.toDataURL() : tmp.querySelector('img')?.src;
+  if (url) { qrCache = {code: room.code, url}; const e2 = $('#qr'); if (e2) e2.innerHTML = `<img src="${url}" alt="QR-code om te joinen">`; }
+}
+
+function hostMusicPanel() {
+  if (lib?.source !== 'spotify') return `<div class="panel"><b>Muziek</b><p class="muted small" style="margin:6px 0 0">Demo-nummers: er speelt geen muziek. Laad jullie Spotify-playlist voor echt geluid.</p></div>`;
+  return `<div class="panel stack"><b>Muziek</b>
+    <div class="row"><button class="btn sm grow ${audioMode() === 'app' ? 'cyan' : 'ghost'}" data-a="mode" data-m="app">💻 In deze browser</button>
+      <button class="btn sm grow ${audioMode() === 'spotify' ? 'cyan' : 'ghost'}" data-a="mode" data-m="spotify">🔊 Via Spotify-app</button></div>
+    ${audioMode() === 'app' ? `<div class="small muted">De muziek speelt op deze laptop. Zet het volume aan. Werkt het best in Chrome of Edge.</div>${sdkStatHtml()}`
+      : `<div class="row"><div class="grow muted small">Afspelen op: ${esc(load(K.dev, null)?.name || 'het apparaat waar Spotify nu speelt')}</div><button class="btn sm" data-a="devices">Kies</button></div>`}
+  </div>`;
+}
+function hostTimeline(pi) {
+  const p = game.players[pi], tl = p.timeline, act = pi === game.turn && (game.phase === 'listen' || game.phase === 'challenge');
+  const chalAt = new Map(game.challenges.map(c => [c.slot, c.p]));
+  let h = '<div class="tl">';
+  for (let i = 0; i <= tl.length; i++) {
+    if (act && game.slot === i) h += `<div class="song mys"><div class="yr">?</div><div class="info"><div class="t">Gok van ${esc(p.name)}</div></div></div>`;
+    else if (act && chalAt.has(i)) h += `<div class="song chal"><div class="yr">HIT<br>STER!</div><div class="info"><div class="t">${esc(game.players[chalAt.get(i)].name)}</div></div></div>`;
+    if (i < tl.length) h += songRow(tl[i], game.phase === 'reveal' && tl[i] === game.current ? 'new' : '');
+  }
+  return h + '</div>';
+}
+function viewHost() {
+  const pl = room.players;
+  const net = hostNet === 'online' ? '<span class="ok">●</span> Room online' : hostNet === 'verbinden' ? '<span class="spin"></span> Room openen…' : hostNet === 'uit' ? '' : `<span class="err">● ${esc(hostNet)}</span>`;
+  const top = `<div class="topbar"><button class="btn sm" data-a="home">‹ Menu</button><h2>Multiplayer</h2>
+    ${net ? `<span class="pill">${net}</span>` : ''}<span class="pill">Room <b>${esc(room.code)}</b></span>
+    ${lib?.source === 'spotify' && audioMode() === 'spotify' ? '<button class="btn sm" data-a="devices" aria-label="Apparaat">🔊</button>' : ''}</div>`;
+
+  if (!game?.mp) {   // ---- lobby ----
+    return `${top}<div class="hgrid">
+      <div class="panel" style="text-align:center">
+        <div class="muted">Pak je telefoon en ga naar</div>
+        <code class="box" style="margin:8px 0;text-align:center">${esc(CONFIG.REDIRECT_URI)}</code>
+        <div class="muted">tik op <b>Meedoen</b> en vul in:</div>
+        <div class="roomcode">${esc(room.code)}</div>
+        <div id="qr"></div>
+        <div class="muted small">Of scan de QR-code met de camera.</div>
+      </div>
+      <div>
+        <div class="panel"><h3>Spelers (${pl.length})</h3>
+          <div class="plist">${pl.length ? pl.map((p, i) => `<div class="pl"><span class="dot ${isOnline(p.pid) ? 'on' : ''}"></span><b class="grow">${esc(p.name)}</b>
+            <button class="btn sm ghost" data-a="hkick" data-i="${i}" aria-label="Verwijder ${esc(p.name)}">✕</button></div>`).join('')
+            : '<p class="muted">Nog niemand. Wachten op spelers…</p>'}</div></div>
+        <div class="panel stack">
+          <div class="row"><div class="grow"><b>Kaartjes om te winnen</b></div>
+            <div class="stepper"><button class="btn sm" data-a="htgt" data-d="-1">−</button><b>${settings.target}</b><button class="btn sm" data-a="htgt" data-d="1">+</button></div></div>
+          <hr>
+          <div class="row"><div class="grow"><b>Tokens</b><div class="muted small">Overslaan, Hitster! roepen en kaartjes kopen</div></div>
+            <label class="switch"><input type="checkbox" id="htok" ${settings.tokens ? 'checked' : ''}><span></span></label></div>
+        </div>
+        ${hostMusicPanel()}
+        <button class="btn primary block" data-a="hstart" ${pl.length ? '' : 'disabled'} style="margin-top:4px">Start spel · ${pl.length} speler${pl.length === 1 ? '' : 's'}</button>
+        <button class="btn ghost block" data-a="hclose" style="margin-top:10px">Room sluiten</button>
+      </div></div>`;
+  }
+
+  // ---- spel ----
+  const p = curP(), ph = game.phase;
+  let stage = '';
+  if (ph === 'handoff') stage = `<div class="muted">Aan de beurt</div><div class="bigwho">${esc(p.name)}</div>
+    <p class="muted">Tik op je telefoon op <b>▶ Start het nummer</b>.</p>
+    <button class="btn sm ghost" data-a="startturn">Start vanaf de laptop</button>`;
+  else if (ph === 'listen') stage = `<div class="muted">${esc(p.name)} kiest een plek…</div><div class="hero" style="margin-top:10px">
+      <div class="q">?</div><div class="eq ${playing ? '' : 'off'}"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="row"><button class="btn grow" data-a="toggle">${playing ? '⏸ Pauze' : '▶ Afspelen'}</button><button class="btn grow" data-a="replay">⏮ Vanaf begin</button></div>
+      ${statusHtml()}</div>
+    <button class="btn sm ghost" data-a="hskip" style="margin-top:10px">Beurt overslaan</button>`;
+  else if (ph === 'challenge') stage = `<div class="hero"><div class="q" style="font-size:40px">HITSTER?</div>
+      <p class="muted">${esc(p.name)} heeft gekozen. Denk je dat het fout is? Roep <b>Hitster!</b> op je telefoon.</p>
+      ${game.challenges.length ? `<p>${game.challenges.map(c => '<span class="pill">🔥 ' + esc(game.players[c.p].name) + '</span>').join(' ')}</p>` : ''}
+      <div class="row"><button class="btn grow" data-a="toggle">${playing ? '⏸ Pauze' : '▶ Afspelen'}</button><button class="btn grow" data-a="replay">⏮ Vanaf begin</button></div>
+      ${statusHtml()}</div>
+    <button class="btn sm ghost" data-a="reveal" style="margin-top:10px">Omdraaien vanaf de laptop</button>`;
+  else if (ph === 'reveal') {
+    const t = T(game.current), y = yearOf(t), r = game.result;
+    const verdict = r.correct ? `<span class="ok">${esc(p.name)} heeft hem goed! 🎉</span>` : r.to !== null ? `<span class="err">Fout…</span> maar <b>${esc(game.players[r.to].name)}</b> pakt hem!` : `<span class="err">Helaas ${esc(p.name)}, fout!</span>`;
+    stage = `<div class="flip"><div class="face big" style="--c:${decColor(y)}">
+        ${t.imgL ? `<img src="${esc(t.imgL)}" alt="">` : `<div class="noimg">${String(y).slice(2)}</div>`}
+        <div class="y">${y}</div><div class="t">${esc(t.title)}</div><div class="a">${esc(t.artist)}</div></div></div>
+      <div class="verdict">${verdict}</div>
+      ${r.chal.length ? `<p class="muted small">${r.chal.map(c => `${esc(game.players[c.p].name)}: ${c.ok ? '<span class="ok">goed</span>' : '<span class="err">fout</span>'}`).join(' · ')}</p>` : ''}
+      ${game.guessed ? '<p class="ok small">+1 token voor titel + artiest</p>' : ''}
+      <button class="btn sm ghost" data-a="next">Volgende beurt</button>`;
+  } else if (ph === 'win') {
+    const w = game.players[game.winner];
+    stage = `<div class="muted">De winnaar is</div><div class="bigwho">${esc(w.name)}</div><p class="muted">${w.timeline.length} kaartjes in ${game.round} rondes</p>
+      <div class="row"><button class="btn primary grow" data-a="hagain">Opnieuw spelen</button><button class="btn grow" data-a="hlobby">Naar de lobby</button></div>`;
+  }
+  return `${top}<div class="hgrid">
+    <div class="panel stage"><div class="muted small">Ronde ${game.round} · ${game.deck.length} nummers op de stapel</div>${stage}</div>
+    <div class="tlgrid compact">${game.players.map((q, i) => `<div class="tlbox ${i === game.turn && ph !== 'win' ? 'act' : ''}">
+      <h3><span class="dot ${isOnline(q.pid) ? 'on' : ''}"></span><span class="grow">${esc(q.name)}</span><span class="muted">${q.timeline.length}/${game.target}</span>${game.tokens ? ` <span class="coin"></span>${q.tokens}` : ''}</h3>
+      ${hostTimeline(i)}</div>`).join('')}</div>
+  </div>`;
+}
+
+/* ---------------- TELEFOON (gast) ---------------- */
+let guest = null;                    // {code, name, pid}
+let gs = null;                       // laatste spelstand van de host
+let gPeer = null, gConn = null, gNet = 'uit', gErr = '', gStopped = false, gTimer = null, gLastPong = 0;
+const gRender = () => { if (ui.screen === 'guest') render(); };
+
+function guestJoin(code, name, pidHint) {
+  code = String(code || '').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+  if (code.length !== 4) return toast('De room-code heeft 4 letters.', true);
+  name = String(name || '').trim().slice(0, 18);
+  if (!name) return toast('Vul je naam in.', true);
+  const prev = load(K.guest, null);
+  guest = {code, name, pid: pidHint || prev?.pid || ('p' + randStr(12))};
+  save(K.guest, guest); save(K.gname, name);
+  gs = null; gErr = ''; gStopped = false; ui.gChal = false;
+  ui.screen = 'guest'; render(); wakeLock();
+  guestConnect();
+}
+function guestStop() {
+  gStopped = true; clearTimeout(gTimer);
+  try { gConn?.close(); } catch {} gConn = null;
+  try { gPeer?.destroy(); } catch {} gPeer = null;
+  gNet = 'uit';
+}
+function retryGuest(ms = 2500) { clearTimeout(gTimer); if (guest && !gStopped) gTimer = setTimeout(guestConnect, ms); }
+async function guestConnect() {
+  if (!guest || gStopped) return;
+  clearTimeout(gTimer);
+  gNet = 'verbinden'; gRender();
+  try { await loadLib('peer', () => window.Peer); } catch (e) { gNet = 'offline'; gErr = e.message; gRender(); return retryGuest(5000); }
+  if (!guest || gStopped) return;
+  if (!gPeer || gPeer.destroyed) {
+    const pr = gPeer = new Peer();
+    pr.on('error', e => {
+      if (gPeer !== pr) return;
+      if (e?.type === 'peer-unavailable') gErr = `Room ${guest?.code} niet gevonden. Klopt de code en staat de laptop aan?`;
+      gNet = 'offline'; gRender(); retryGuest(3000);
+    });
+    pr.on('disconnected', () => { setTimeout(() => { try { if (gPeer === pr && !pr.destroyed) pr.reconnect(); } catch {} }, 1000); });
+  }
+  const pr = gPeer;
+  if (!pr.open) {
+    const ok = await new Promise(res => { let done = false; const f = v => { if (!done) { done = true; res(v); } }; pr.on('open', () => f(true)); setTimeout(() => f(pr.open), 8000); });
+    if (!ok || gPeer !== pr) { if (gPeer === pr) { try { pr.destroy(); } catch {} gPeer = null; } gNet = 'offline'; gRender(); return retryGuest(); }
+  }
+  if (gStopped) return;
+  try { gConn?.close(); } catch {}
+  const c = gConn = pr.connect(PEER_PREFIX + guest.code, {reliable: true});
+  c.on('open', () => { if (gConn !== c) return; gNet = 'online'; gLastPong = Date.now(); c.send({t: 'hello', pid: guest.pid, name: guest.name}); gRender(); });
+  c.on('data', m => { if (gConn === c) guestMsg(m); });
+  c.on('close', () => { if (gConn !== c) return; gNet = 'offline'; gRender(); retryGuest(); });
+  c.on('error', () => {});
+  setTimeout(() => { if (gConn === c && !c.open) { try { c.close(); } catch {} gNet = 'offline'; gRender(); retryGuest(); } }, 10000);
+}
+function guestMsg(m) {
+  if (!m || typeof m !== 'object') return;
+  gLastPong = Date.now();
+  if (m.t === 'welcome') { guest.pid = m.pid; save(K.guest, guest); gErr = ''; return; }
+  if (m.t === 'err') { gErr = m.msg; guestStop(); render(); return; }
+  if (m.t === 'closed') { gErr = 'De host heeft de room gesloten.'; guestStop(); del(K.guest); render(); return; }
+  if (m.t === 'state') {
+    const prev = gs; gs = m.s; gErr = '';
+    if (prev?.phase !== gs.phase) {
+      ui.gChal = false;
+      if (gs.phase === 'reveal' && gs.result && gs.result.to !== null && gs.players?.[gs.result.to]?.pid === guest.pid) burst(18);
+      if (gs.phase === 'win') confettiRain();
+      if (gs.phase !== prev?.phase) window.scrollTo(0, 0);
+    }
+    gRender();
+  }
+}
+function sendAct(a, i) {
+  if (gConn?.open) { try { gConn.send({t: 'act', a, i}); } catch {} }
+  else { toast('Even geen verbinding, opnieuw verbinden…', true); guestConnect(); }
+}
+setInterval(() => {
+  if (ui.screen !== 'guest' || !gConn?.open) return;
+  try { gConn.send({t: 'ping'}); } catch {}
+  if (Date.now() - gLastPong > 16000) { try { gConn.close(); } catch {} gConn = null; gNet = 'offline'; gRender(); retryGuest(500); }
+}, 5000);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  if (ui.screen === 'guest' || ui.screen === 'host') wakeLock();
+  if (ui.screen === 'guest' && guest && !gStopped && !gConn?.open) guestConnect();
+});
+
+function viewJoin() {
+  const g = load(K.guest, null);
+  return `<div class="topbar"><button class="btn sm" data-a="home">‹ Terug</button><h2>Meedoen</h2></div>
+    <div class="logo" style="font-size:36px">HITSTER<span>THUIS</span></div>
+    <div class="panel stack">
+      <label class="lbl" for="gcode">Room-code (staat op de laptop)</label>
+      <input type="text" id="gcode" maxlength="4" placeholder="ABCD" autocapitalize="characters" autocorrect="off" autocomplete="off" spellcheck="false"
+        style="font-family:var(--head);font-size:34px;letter-spacing:.3em;text-align:center;text-transform:uppercase" value="${esc(ui.joinCode || g?.code || '')}">
+      <label class="lbl" for="gname">Jouw naam</label>
+      <input type="text" id="gname" maxlength="18" placeholder="bijv. Lisa" autocomplete="nickname" value="${esc(load(K.gname, '') || '')}">
+      <button class="btn primary block" data-a="gjoin">Meedoen</button>
+      <p class="muted small">Je hebt geen Spotify nodig: de muziek komt uit de laptop.</p>
+    </div>`;
+}
+function gCards(tl, mode) {
+  const chalAt = new Map((gs.challenges || []).map(c => [c.slot, c.p]));
+  const ap = gs.players[gs.turn];
+  let h = `<div class="tl"><div class="tl-end">▲ ouder</div>`;
+  for (let i = 0; i <= tl.length; i++) {
+    if (mode === 'place') {
+      h += gs.slot === i
+        ? `<div class="song mys new" data-a="g" data-x="slot" data-i="${i}"><div class="yr">?</div><div class="info"><div class="t">Jouw gok</div><div class="a">Tik op een andere plek om te verplaatsen</div></div></div>`
+        : `<button class="slot" data-a="g" data-x="slot" data-i="${i}">＋ hier plaatsen</button>`;
+    } else if (mode !== 'plain') {
+      if (gs.slot === i) h += `<div class="song mys"><div class="yr">?</div><div class="info"><div class="t">${esc(ap.name)}</div><div class="a">gok van de speler aan de beurt</div></div></div>`;
+      else if (chalAt.has(i)) h += `<div class="song chal"><div class="yr">HIT<br>STER!</div><div class="info"><div class="t">${esc(gs.players[chalAt.get(i)].name)}</div><div class="a">claimt deze plek</div></div></div>`;
+      else if (mode === 'chalpick') h += `<button class="slot hot" data-a="g" data-x="chal" data-i="${i}">＋ hier hoort hij!</button>`;
+      else h += `<div style="height:4px"></div>`;
+    }
+    if (i < tl.length) h += cardHtml(tl[i], gs.phase === 'reveal' && gs.current && tl[i].title === gs.current.title && tl[i].year === gs.current.year ? 'new' : '');
+  }
+  return h + `<div class="tl-end">▼ nieuwer</div></div>`;
+}
+function viewGuest() {
+  const netTxt = gNet === 'online' ? '<span class="ok">●</span> Verbonden' : gNet === 'verbinden' ? '<span class="spin"></span> Verbinden…' : '<span class="err">●</span> Opnieuw verbinden…';
+  const top = `<div class="topbar"><span class="pill">${netTxt} · <b>${esc(guest.code)}</b></span><span class="grow"></span>
+    ${gs?.players ? '<button class="btn sm" data-a="gtl">Tijdlijnen</button>' : ''}<button class="btn sm ghost" data-a="gleave">Verlaten</button></div>`;
+  if (gStopped && gErr) return `${top}<div class="handoff"><p class="err">${esc(gErr)}</p>
+    <button class="btn primary block" data-a="gretry">Opnieuw proberen</button><button class="btn block" data-a="join">Andere code of naam</button></div>`;
+  if (!gs) return `${top}<div class="handoff"><div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
+    <p>Verbinden met room <b>${esc(guest.code)}</b>…</p>${gErr ? `<p class="err small">${esc(gErr)}</p>` : ''}
+    <button class="btn ghost block" data-a="join">Andere code of naam</button></div>`;
+
+  if (gs.phase === 'lobby' || gs.phase === 'away') return `${top}<div class="handoff" style="min-height:auto;padding-top:20px">
+    <div class="muted">${gs.phase === 'away' ? 'De host zit even in het menu…' : 'Je zit erin!'}</div>
+    <div class="bigwho">${esc(guest.name)}</div>
+    <p class="muted">${gs.phase === 'away' ? 'Het spel gaat zo verder.' : 'Wachten tot de host het spel start.'}</p></div>
+    <div class="panel"><h3>Spelers (${gs.lobby.length})</h3><div class="plist">${gs.lobby.map(p => `<div class="pl"><span class="dot ${p.online ? 'on' : ''}"></span><b class="grow">${esc(p.name)}</b>${p.pid === guest.pid ? '<span class="pill">jij</span>' : ''}</div>`).join('')}</div></div>`;
+
+  const P = gs.players, me = P.findIndex(p => p.pid === guest.pid);
+  if (me < 0) return `${top}<div class="handoff"><p>Dit spel is al bezig zonder jou. Je kunt meedoen zodra de host teruggaat naar de lobby.</p></div>`;
+  const ap = P[gs.turn], isMe = me === gs.turn, mine = P[me], ph = gs.phase;
+  const scores = `<div class="scores">${P.map((p, i) => `<div class="score ${i === gs.turn ? 'me' : ''}"><b>${esc(p.name)}${i === me ? ' (jij)' : ''}</b><span class="n">${p.timeline.length}</span><span class="muted">/${gs.target}</span>${gs.tokens ? ` <span class="coin"></span> ${p.tokens}` : ''}</div>`).join('')}</div>`;
+
+  if (ph === 'handoff') return `${top}${scores}<div class="handoff">
+    ${isMe ? `<div class="bigwho">Jouw beurt!</div><p class="muted">Het nummer speelt op de laptop.</p>
+      <button class="btn primary block" data-a="g" data-x="startturn" style="min-height:64px;font-size:20px">▶ Start het nummer</button>`
+    : `<p class="muted">Aan de beurt</p><div class="bigwho">${esc(ap.name)}</div><p class="muted small">Jij hebt ${mine.timeline.length} van ${gs.target} kaartjes.</p>`}</div>`;
+
+  if (ph === 'listen') {
+    if (isMe) return `${top}${scores}
+      <div class="hero"><div class="muted small">Luister naar de laptop</div><div class="q" style="font-size:48px">?</div>
+        <div class="row"><button class="btn grow" data-a="g" data-x="replay">⏮ Vanaf begin</button></div>
+        ${gs.tokens ? `<div class="row" style="margin-top:10px"><button class="btn sm grow" data-a="g" data-x="skip" ${mine.tokens < 1 ? 'disabled' : ''}>Overslaan · <span class="coin"></span> 1</button>
+          <button class="btn sm grow" data-a="g" data-x="buy" ${mine.tokens < 3 ? 'disabled' : ''}>Kaartje kopen · <span class="coin"></span> 3</button></div>` : ''}
+      </div>
+      <h3 style="margin-top:18px">Waar past dit nummer in jouw tijdlijn?</h3>
+      ${gCards(mine.timeline, 'place')}
+      <div class="bottom"><div class="inner"><button class="btn primary block" data-a="g" data-x="lock" ${gs.slot === null || gs.slot === undefined ? 'disabled' : ''}>${gs.slot === null || gs.slot === undefined ? 'Kies eerst een plek' : 'Vastzetten'}</button></div></div>`;
+    return `${top}${scores}<div class="hero"><div class="muted small">Aan de beurt</div><div class="bigwho" style="font-size:32px">${esc(ap.name)}</div>
+      <p class="muted small">kiest een plek… Denk alvast mee: waar hoort hij volgens jou?</p></div>
+      <h3 style="margin-top:16px">Tijdlijn van ${esc(ap.name)}</h3>${gCards(ap.timeline, 'watch')}`;
+  }
+
+  if (ph === 'challenge') {
+    if (isMe) return `${top}${scores}<div class="hero"><div class="q" style="font-size:34px">HITSTER?</div>
+        <p class="muted small" style="margin-top:6px">De anderen mogen nu Hitster! roepen. Klaar? Draai hem om.</p></div>
+      ${gCards(mine.timeline, 'challenge')}
+      <div class="bottom"><div class="inner"><button class="btn ghost" data-a="g" data-x="unlock">‹ Terug</button><button class="btn primary grow" data-a="g" data-x="reveal">Omdraaien!</button></div></div>`;
+    const done = (gs.challenges || []).find(c => c.p === me);
+    const can = gs.tokens && mine.tokens > 0 && !done;
+    if (ui.gChal && can) return `${top}${scores}<div class="hero"><div class="q" style="font-size:30px">HITSTER!</div>
+        <p class="small" style="margin-top:6px">Tik waar het nummer volgens jou hoort in de tijdlijn van <b>${esc(ap.name)}</b>. Kost 1 token.</p>
+        <button class="btn sm ghost" data-a="gchalno">Toch niet</button></div>
+      ${gCards(ap.timeline, 'chalpick')}`;
+    return `${top}${scores}<div class="hero"><div class="muted small">${esc(ap.name)} heeft gekozen</div>
+        ${done ? '<p class="ok" style="margin-top:8px">Jouw Hitster! staat erin. Spannend…</p>'
+          : can ? `<p class="small muted" style="margin:6px 0 10px">Denk je dat het fout is? Pak het kaartje af!</p><button class="btn block hitbtn" data-a="gchal">HITSTER!</button><div class="muted small" style="margin-top:6px">Kost 1 token · je hebt er ${mine.tokens}</div>`
+          : `<p class="muted small" style="margin-top:8px">${gs.tokens ? 'Je hebt geen tokens om Hitster! te roepen.' : 'Wachten tot hij wordt omgedraaid…'}</p>`}
+      </div>${gCards(ap.timeline, 'challenge')}`;
+  }
+
+  if (ph === 'reveal') {
+    const t = gs.current || {title: '?', artist: '', year: 0}, r = gs.result;
+    const owner = r.to !== null ? r.to : gs.turn;
+    const verdict = r.correct ? (isMe ? '<span class="ok">Goed! 🎉</span>' : `<span class="ok">${esc(ap.name)} heeft hem goed!</span>`)
+      : r.to === me ? '<span class="ok">Jij pakt hem! 🔥</span>'
+      : r.to !== null ? `<span class="err">Fout…</span> <b>${esc(P[r.to].name)}</b> pakt hem!`
+      : isMe ? '<span class="err">Helaas, fout!</span>' : `<span class="err">${esc(ap.name)} had hem fout</span>`;
+    return `${top}${scores}
+      <div class="flip"><div class="face big" style="--c:${decColor(t.year)}">
+        ${t.imgL ? `<img src="${esc(t.imgL)}" alt="">` : `<div class="noimg">${String(t.year).slice(2)}</div>`}
+        <div class="y">${t.year}</div><div class="t">${esc(t.title)}</div><div class="a">${esc(t.artist)}</div></div></div>
+      <div class="verdict">${verdict}</div>
+      ${r.chal.length ? `<p class="muted small" style="text-align:center">${r.chal.map(c => `${esc(P[c.p].name)}: ${c.ok ? '<span class="ok">goed</span>' : '<span class="err">fout</span>'}`).join(' · ')}</p>` : ''}
+      ${isMe && gs.tokens ? `<button class="btn block" data-a="g" data-x="guessed" ${gs.guessed || mine.tokens >= 5 ? 'disabled' : ''} style="margin:10px 0">${gs.guessed ? '✓ Token gekregen' : 'Titel + artiest goed geraden? +1 <span class="coin"></span>'}</button>` : ''}
+      ${!isMe ? `<p class="muted small" style="text-align:center">Wachten tot ${esc(ap.name)} doorgaat…</p>` : ''}
+      <h3 style="margin-top:14px">Tijdlijn van ${owner === me ? 'jou' : esc(P[owner].name)}</h3>${gCards(P[owner].timeline, 'plain')}
+      ${isMe ? `<div class="bottom"><div class="inner"><button class="btn primary block" data-a="g" data-x="next">Volgende beurt</button></div></div>` : ''}`;
+  }
+
+  if (ph === 'win') {
+    const w = P[gs.winner];
+    const rank = [...P].sort((a, b) => b.timeline.length - a.timeline.length).findIndex(p => p.pid === guest.pid) + 1;
+    return `${top}<div style="text-align:center;margin:20px 0"><div class="muted">De winnaar is</div><div class="bigwho">${gs.winner === me ? 'JIJ! 🏆' : esc(w.name)}</div>
+      <p class="muted">Jij eindigt op plek ${rank} met ${mine.timeline.length} kaartjes.</p></div>
+      <h3>Jouw tijdlijn</h3>${gCards(mine.timeline, 'plain')}`;
+  }
+  return top;
+}
+
+const mpActions = {
+  host() { hostOpen(false); },
+  hresume() { hostOpen(true); },
+  hclose() { hostClose(false); },
+  hkick(d) {
+    const p = room?.players[+d.i]; if (!p) return;
+    const c = conns.get(p.pid); if (c) { try { c.send({t: 'err', msg: 'De host heeft je uit de room gehaald.'}); setTimeout(() => c.close(), 300); } catch {} }
+    conns.delete(p.pid); room.players.splice(+d.i, 1); save(K.room, room); render(); mpBroadcast();
+  },
+  htgt(d) { settings.target = Math.max(3, Math.min(30, settings.target + +d.d)); save(K.set, settings); render(); },
+  hstart() {
+    if (!room?.players.length) return toast('Wacht tot er iemand joint.', true);
+    newGame(room.players.map(p => p.name), {mp: true, pids: room.players.map(p => p.pid)});
+  },
+  hagain() { if (room?.players.length) newGame(room.players.map(p => p.name), {mp: true, pids: room.players.map(p => p.pid)}); },
+  hlobby() { game = null; del(K.mpgame); render(); mpBroadcast(); },
+  hskip() { if (!game?.mp || !game.current) return nextTurn(); game.discard.push(game.current); game.current = null; nextTurn(); },
+  join() { if (ui.screen === 'guest') guestStop(); ui.screen = 'join'; render(); setTimeout(() => { const c = $('#gcode'); if (c && !c.value) c.focus(); }, 50); },
+  gjoin() { guestJoin($('#gcode')?.value, $('#gname')?.value); },
+  grejoin() { const g = load(K.guest, null); if (g) guestJoin(g.code, g.name, g.pid); },
+  gretry() { gStopped = false; gErr = ''; render(); guestConnect(); },
+  gleave() { guestStop(); del(K.guest); guest = null; gs = null; ui.screen = 'home'; render(); },
+  g(d) { if (d.x === 'chal') ui.gChal = false; sendAct(d.x, d.i); },
+  gchal() { ui.gChal = true; render(); },
+  gchalno() { ui.gChal = false; render(); },
+  gtl() {
+    if (!gs?.players) return;
+    modal(`<h2>Tijdlijnen</h2>${gs.players.map(p => `<h3 style="margin-top:16px">${esc(p.name)}${p.pid === guest.pid ? ' (jij)' : ''} · ${p.timeline.length}/${gs.target}${gs.tokens ? ' · <span class="coin"></span> ' + p.tokens : ''}</h3>
+      <div class="tl">${p.timeline.map(c => cardHtml(c)).join('')}</div>`).join('')}`);
+  },
+};
+document.addEventListener('change', e => {
+  if (e.target.id === 'htok') { settings.tokens = e.target.checked; save(K.set, settings); }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.target.id === 'gcode' || e.target.id === 'gname')) mpActions.gjoin();
+});
+
+/* =========================================================
+   EVENTS
+   ========================================================= */
+function readNames() { return [...document.querySelectorAll('.pname')].map((el, i) => el.value.trim() || 'Speler ' + (i + 1)); }
+const actions = {
+  home() { closeModal(); if (ui.screen === 'host') hostLeave(); ui.screen = 'home'; render(); window.scrollTo(0, 0); },
+  resume() { ui.screen = 'game'; render(); },
+  savecid() { const v = $('#cid').value.trim(); if (!v) return; save(K.cid, v); render(); },
+  resetcid() { del(K.cid); del(K.auth); render(); },
+  login, logout, loadpl: loadPlaylist, demo: loadDemo,
+  library() { ui.screen = 'library'; render(); window.scrollTo(0, 0); },
+  libf(d) { ui.libFilter = d.f; render(); },
+  export: exportJson,
+  rules: showRules, close: closeModal, timelines: showTimelines,
+  devices: openDevices,
+  pickdev(d) { save(K.dev, {id: d.id, name: d.name}); closeModal(); toast('Afspelen op ' + d.name); api('/me/player', {method: 'PUT', body: {device_ids: [d.id], play: true}}).catch(() => {}); if (ui.screen === 'setup') render(); if ((ui.screen === 'game' || ui.screen === 'host') && game?.phase === 'listen') play(true); },
+  setup() { ui.screen = 'setup'; render(); window.scrollTo(0, 0); },
+  addname() { const n = readNames(); n.push('Speler ' + (n.length + 1)); save(K.names, n); render(); },
+  rmname(d) { const n = readNames(); n.splice(+d.i, 1); save(K.names, n); render(); },
+  tgt(d) { save(K.names, readNames()); settings.target = Math.max(3, Math.min(30, settings.target + +d.d)); save(K.set, settings); render(); },
+  start() {
+    const names = readNames(); save(K.names, names);
+    settings.tokens = $('#tok').checked; save(K.set, settings); newGame(names);
+  },
+  startturn: startTurn,
+  diag: runDiag, testplay: testPlay, checkdev: checkPlayer,
+  relogin() { del(K.auth); login(); },
+  mode(d) { save(K.mode, d.m); if (d.m === 'app') initSdk(); render(); },
+  copydiag() { const tx = runDiag.text || ''; (navigator.clipboard?.writeText(tx) || Promise.reject()).then(() => toast('Rapport gekopieerd ✓'), () => { modal('<h2>Rapport</h2><textarea style="width:100%;height:50vh;background:#120d27;color:#fff;border-radius:10px">' + esc(tx) + '</textarea>'); }); },
+  toggle() { playing ? pause() : play(false); },
+  replay() { if (playing && curDev && pstat.s === 'ok') seekRandom(); else play(true); },
+  skip: skipSong, buy: buyCard,
+  slot(d) { game.slot = +d.i; saveGame(); render(); },
+  lock: lockIn,
+  unlock() { game.phase = 'listen'; game.challenges = []; ui.pendingChallenger = null; saveGame(); render(); },
+  chal(d) { ui.pendingChallenger = +d.i; render(); },
+  chalcancel() { ui.pendingChallenger = null; render(); },
+  chalslot(d) { game.challenges.push({p: ui.pendingChallenger, slot: +d.i}); ui.pendingChallenger = null; saveGame(); render(); },
+  reveal,
+  guessed() { const p = curP(); if (game.guessed || p.tokens >= 5) return; p.tokens++; game.guessed = true; saveGame(); render(); },
+  next: nextTurn,
+  again() { const names = game.players.map(p => p.name); newGame(names); },
+  ...mpActions,
+};
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-a]'); if (!el) return;
+  unlockAudio();
+  const a = actions[el.dataset.a]; if (!a) return;
+  if (el.tagName === 'A') e.preventDefault();
+  a(el.dataset, el);
+});
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+document.addEventListener('input', e => {
+  if (e.target.id === 'libq') { ui.libQuery = e.target.value; const pos = e.target.selectionStart; render(); const n = $('#libq'); n.focus(); n.setSelectionRange(pos, pos); }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.dataset.c === 'year') { const v = parseInt(el.value); setOverride(el.dataset.id, {year: v >= 1900 && v <= 2100 ? v : undefined}); el.classList.toggle('changed', !!ov[el.dataset.id]?.year); }
+  if (el.dataset.c === 'incl') { setOverride(el.dataset.id, {excluded: !el.checked}); el.closest('.lib-row').classList.toggle('off', !el.checked); }
+  if (el.id === 'imp' && el.files[0]) importJson(el.files[0]);
+  if (el.id === 'tok') { settings.tokens = el.checked; save(K.set, settings); }
+  if (el.classList.contains('pname')) save(K.names, readNames());
+});
+
+/* ---------- start ---------- */
+(async () => {
+  await handleCallback();
+  if (game && game.phase !== 'win' && game.phase !== 'handoff') ui.screen = 'game';
+  const qroom = new URLSearchParams(location.search).get('room');
+  if (qroom) { ui.joinCode = qroom.toUpperCase(); ui.screen = 'join'; history.replaceState(null, '', location.pathname); }
+  render();
+  if (loggedIn() && audioMode() === 'app') initSdk();
+  if (loggedIn()) { try { me = await api('/me'); render(); } catch (e) { if (/opnieuw/.test(e.message)) { toast(e.message, true); render(); } } }
+})();
+</script>
+</body>
+</html>
